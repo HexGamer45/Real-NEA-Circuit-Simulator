@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,6 @@ namespace Real_NEA_Circuit_Simulator
         List<Component> ComponentsList = new List<Component>();
         public Circuit() 
         { 
-            
         }
     }
 }
