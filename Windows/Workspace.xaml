@@ -1,0 +1,246 @@
+﻿<Window x:Class="Real_NEA_Circuit_Simulator.Workspace"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Real_NEA_Circuit_Simulator"
+        mc:Ignorable="d"
+        Title="Workspace" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Column="0" Grid.Row="1" Background="{StaticResource ComponentTabBackground}">
+
+            <ScrollViewer HorizontalAlignment="Stretch" Height="Auto" Margin="5,5,5,5" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <StackPanel x:Name="ComponentInsertionPanelLeft" HorizontalAlignment="Stretch" Background="{StaticResource ComponentInsertionBackground}" Margin="5,5,5,5">
+                            <Button Click="GenerateNewComponent" Tag="LED" HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
+                                </StackPanel>
+                            </Button>
+
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <StackPanel x:Name="ComponentInsertionPanelRight" HorizontalAlignment="Stretch" Background="{StaticResource ComponentInsertionBackground}" Margin="5,5,5,5">
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="1" Background="{StaticResource MainWorkspaceBackground}">
+        </Grid>
+        <Grid Grid.Column="2" Grid.Row="1" Background="{StaticResource ComponentInfoTabBackground}">
+
+        </Grid>
+    </Grid>
+
+</Window>
