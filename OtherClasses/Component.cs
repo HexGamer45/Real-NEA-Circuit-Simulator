@@ -1,4 +1,4 @@
-﻿﻿using Real_NEA_Circuit_Simulator.OtherClasses;
+﻿using Real_NEA_Circuit_Simulator.OtherClasses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,25 +9,17 @@ namespace Real_NEA_Circuit_Simulator
 {
     internal class Component
     {
-        public ComponentInfo InfoObject;
+        public List<Node> ConnectedNodes {get; private set;}
+        public ComponentInfo InfoObject { get; private set; }
         public string name { get; private set; }
-        public static Dictionary<string, Component> ComponentNames = new Dictionary<string, Component>();
-
-        static Component()
-        {
-            Component LED = new(60f, 4.5f, "LED");
-            ComponentNames.Add("LED",LED);
-        }
-        public Component(float resistance, float working_voltage, string name)
+        public Component(string name)
         {
             this.name = name;
+            this.ConnectedNodes = new List<Node>(){new Node(name+"0", this),new Node(name+"1", this)};
             this.InfoObject = new ComponentInfo(resistance, working_voltage, this);
         }
 
-        public Component Clone()
-        {
-            return new Component(this.InfoObject.Resistance, this.InfoObject.WorkingVoltage, this.name);
-        }
+        
 
     }
 }

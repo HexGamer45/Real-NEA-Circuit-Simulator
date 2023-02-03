@@ -1,4 +1,4 @@
-﻿﻿<Application x:Class="Real_NEA_Circuit_Simulator.App"
+﻿<Application x:Class="Real_NEA_Circuit_Simulator.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Real_NEA_Circuit_Simulator"
