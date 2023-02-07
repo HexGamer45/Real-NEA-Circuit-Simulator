@@ -14,7 +14,7 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses
 
         public ComponentInfo(float resistance, float workingVoltage, Component componentDescribing)
         {
-            this.Active = false
+            this.Active = false;
             this.Resistance = resistance;
             this.WorkingVoltage = workingVoltage;
         }
