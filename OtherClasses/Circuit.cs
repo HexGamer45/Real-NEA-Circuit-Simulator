@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,6 +53,50 @@ namespace Real_NEA_Circuit_Simulator
             this.AdjacencyList[component2].Add(component1);
             this.WireToNodes[wire].Add(nodes[0]);
             this.WireToNodes[wire].Add(nodes[1]);
+        }
+
+        private bool IsCyclic(Dictionary<Component, List<Component>> graph, Component start, Component component, HashSet<Component> visited, Component? prev)
+        {
+             foreach (Component neighbour in graph[component])
+             {
+                 if (!visited.Contains(neighbour))
+                 {
+                     if (this.IsCyclic(graph, start, neighbour, visited, component))
+                     {
+                         return true;
+                     }
+                 }
+                 else if (neighbour!=prev && neighbour == start)
+                 {
+                     return true;
+                 }
+             }
+             return false;
+        }
+
+
+        public Circuit RemoveNonCircuitComponents()
+        {
+            Dictionary<Component, List<Component>> circuit = new(this.AdjacencyList);
+            List<Component> keylist = new(circuit.Keys);
+            foreach (Component component in keylist)
+            {
+                if (!this.IsCyclic(circuit, component, component, new HashSet<Component>(), null))
+                {
+                    foreach (Component otherComponent in keylist)
+                    {
+                        foreach (Component neighbour in circuit[otherComponent])
+                        {
+                            if (neighbour == component)
+                            {
+                                circuit[otherComponent].Remove(neighbour);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Real_NEA_Circuit_Simulator.OtherClasses;
+﻿﻿using Real_NEA_Circuit_Simulator.OtherClasses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
