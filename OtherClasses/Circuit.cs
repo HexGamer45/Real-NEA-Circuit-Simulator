@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Xaml;
 
 namespace Real_NEA_Circuit_Simulator
 {
-    internal class Circuit
+    public class Circuit
     {
+        public Canvas MainCanvas { get; private set; }
         public string name { get; private set; }
         public List<Component> ComponentsList { get; private set; }
         public Dictionary<Component, List<Component>> AdjacencyList { get; private set; }
         public Dictionary<Wire, List<Node>> WireToNodes { get; private set; }
-        public Circuit(string name)
+        public Circuit(string name, Canvas canvas)
         {
+            this.MainCanvas = canvas;
             this.name = name;
             this.ComponentsList = new();
             this.AdjacencyList = new();
@@ -46,7 +49,7 @@ namespace Real_NEA_Circuit_Simulator
             List<Node> nodes = new();
             nodes.Add(component1.ConnectedNodes[1]);
             nodes.Add(component2.ConnectedNodes[0]);
-            Wire wire = new(component1.name + "-" + component2.name + "-wire", nodes);
+            Wire wire = new(component1.name + "-" + component2.name + "-wire", nodes, this);
             nodes[0].AddWire(wire);
             nodes[1].AddWire(wire);
             this.AdjacencyList[component1].Add(component2);
@@ -75,7 +78,7 @@ namespace Real_NEA_Circuit_Simulator
         }
 
 
-        public Circuit RemoveNonCircuitComponents()
+        public Dictionary<Component, List<Component>> RemoveNonCircuitComponents()
         {
             Dictionary<Component, List<Component>> circuit = new(this.AdjacencyList);
             List<Component> keylist = new(circuit.Keys);
@@ -94,8 +97,10 @@ namespace Real_NEA_Circuit_Simulator
                             }
                         }
                     }
+                    circuit.Remove(component);
                 }
             }
+            return circuit;
 
         }
     }

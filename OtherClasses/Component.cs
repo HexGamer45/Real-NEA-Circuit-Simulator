@@ -1,21 +1,30 @@
 ﻿using Real_NEA_Circuit_Simulator.OtherClasses;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Point = System.Drawing.Point;
+using Size = System.Windows.Size;
 
 namespace Real_NEA_Circuit_Simulator
 {
-    internal class Component
+    public class Component
     {
+        public Circuit MainCircuit { get; private set;}
+        public string type { get; private set;}
         public List<Node> ConnectedNodes {get; private set;}
         public string name { get; private set; }
-        public Component(string name)
+        private Image? image;
+        public Component(string name, string type, Circuit circuit)
         {
+            this.image = null;
+            this.MainCircuit = circuit;
+            this.type = type;
             this.name = name;
-            this.ConnectedNodes = new List<Node>(){new Node(name+"0", this),new Node(name+"1", this)};
+            this.ConnectedNodes = new List<Node>() { new Node(name + "0", this), new Node(name + "1", this) };
         }
 
 
@@ -31,6 +40,77 @@ namespace Real_NEA_Circuit_Simulator
                 this.AddNode(node);
             }
         }        
+
+
+        public void RenderFirst(Point position)
+        {
+            Image image = new Image();
+            image.Source = new BitmapImage(new Uri($"../Assets/ComponentIcons/{this.type}.png", UriKind.Relative));
+            image.Tag = this;
+            Canvas canvas = this.MainCircuit.MainCanvas;
+            canvas.Children.Add(image);
+            image.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            image.Arrange(new Rect(0, 0, image.DesiredSize.Width, image.DesiredSize.Height));
+            position.X -= (int)image.ActualWidth / 2;
+            position.Y -= (int)image.ActualHeight / 2;
+            Canvas.SetLeft(image, position.X);
+            Canvas.SetTop(image, position.Y);
+            this.image = image;
+            for (int i = 0; i < this.ConnectedNodes.Count; i ++)
+            {
+                Node node = this.ConnectedNodes[i];
+                int direction;
+                if (i == 0) {direction = -1; }
+                else {direction = 1; }
+                Point nodePosition = new Point(position.X + (int) (image.ActualWidth / 2 * direction + image.ActualWidth/2), position.Y + ((int)image.ActualHeight / 2));
+                node.RenderFirst(nodePosition);
+                
+            }
+        }
+
+        public void Move(Point position)
+        {
+            if (this.image != null)
+            {
+                position.X -= (int)this.image.ActualWidth / 2;
+                if (position.X > this.MainCircuit.MainCanvas.ActualWidth - this.image.ActualWidth - this.ConnectedNodes[0].image.ActualWidth / 2) { position.X = (int)(this.MainCircuit.MainCanvas.ActualWidth - this.image.ActualWidth - this.ConnectedNodes[0].image.ActualWidth / 2); }
+                else if (position.X < this.ConnectedNodes[0].image.ActualWidth / 2) { position.X = (int)this.ConnectedNodes[0].image.ActualWidth / 2; }
+                position.Y -= (int)this.image.ActualHeight / 2;
+                if (position.Y > this.MainCircuit.MainCanvas.ActualHeight - this.image.ActualHeight) { position.Y = (int)(this.MainCircuit.MainCanvas.ActualHeight - this.image.ActualHeight); }
+                else if (position.Y < 0) { position.Y = 0; }
+                Canvas.SetLeft(this.image, position.X);
+                Canvas.SetTop(this.image, position.Y);
+                for (int i = 0; i < this.ConnectedNodes.Count; i++)
+                {
+                    Node node = this.ConnectedNodes[i];
+                    int direction;
+                    if (i == 0) { direction = -1; }
+                    else { direction = 1; }
+                    Point nodePosition = new Point(position.X + (int)(this.image.ActualWidth / 2 * direction + image.ActualWidth / 2), position.Y + ((int)this.image.ActualHeight / 2));
+                    node.Move(nodePosition);
+
+                }
+
+                foreach (Node node in this.ConnectedNodes)
+                {
+
+                    foreach (Wire wire in node.ConnectedWires)
+                    {
+                        if (wire.ConnectedNodes[0] == node)
+                        {
+                            wire.line.X1 = Canvas.GetLeft(node.image) + (int)node.image.ActualWidth / 2;
+                            wire.line.Y1 = Canvas.GetTop(node.image) + (int)node.image.ActualHeight / 2;
+                        }
+                        else
+                        {
+                            wire.line.X2 = Canvas.GetLeft(node.image) + (int)node.image.ActualWidth / 2;
+                            wire.line.Y2 = Canvas.GetTop(node.image) + (int)node.image.ActualHeight / 2;
+                        }
+                    }
+                }
+            }
+        }
+
 
     }
 }
