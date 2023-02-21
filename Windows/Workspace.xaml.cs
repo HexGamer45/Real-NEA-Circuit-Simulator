@@ -21,6 +21,7 @@ namespace Real_NEA_Circuit_Simulator
         public Circuit MainCircuit {get; private set;}
         private Image? SelectedComponent;
         private Image? SelectedNode;
+        private Node? SelectedNodeObject;
         private Wire? SelectedWire;
         private bool MouseInCanvas;
         private bool MiddleDown;
@@ -35,6 +36,7 @@ namespace Real_NEA_Circuit_Simulator
             this.SelectedWire = null;
             this.SelectedComponent = null;
             this.SelectedNode = null;
+            this.SelectedNodeObject= null;
             this.MouseInCanvas = false;
             this.LeftDown = false;
             this.MiddleDown = false;
@@ -79,12 +81,14 @@ namespace Real_NEA_Circuit_Simulator
             {
                 this.LeftDown = true;
                 this.SelectedNode = this.GetClosestNode();
+                if (this.SelectedNodeObject!= null ) { this.SelectedNodeObject = (Node)this.SelectedNode.Tag; }
+                
                 Image? closestImage = this.SelectedNode;
                 if (closestImage != null)
                 {
                     Wire newWire = new Wire(((Node)closestImage.Tag).name + "-temp", new List<Node>() {(Node)closestImage.Tag}, this.MainCircuit);
                     newWire.RenderWithOneNode();
-                    newWire.AddNode((Node)closestImage.Tag);
+                    newWire.AddNode(this.SelectedNodeObject);
                     this.SelectedWire = newWire;
                 }
             }
@@ -105,19 +109,35 @@ namespace Real_NEA_Circuit_Simulator
                     Image? closestNodeImage = GetClosestNode();
                     if (closestNodeImage != null)
                     {
-                        Node closestNode = (Node)closestNodeImage.Tag;
-                        if (this.MainCircuit.AdjacencyList.Keys.Contains(closestNode.ConnectedComponent) && this.MainCircuit.AdjacencyList[closestNode.ConnectedComponent].Contains(((Node) this.SelectedNode.Tag).ConnectedComponent))
+                        Node closestNode = (Node) closestNodeImage.Tag;
+                        this.SelectedNodeObject = closestNode;
+                        if (this.MainCircuit.AdjacencyList.ContainsKey(closestNode.ConnectedComponent))
+                        {
+                            foreach (Component component in this.MainCircuit.AdjacencyList[closestNode.ConnectedComponent])
+                            {
+                                Console.WriteLine(component.name);
+                                if (component == closestNode.ConnectedComponent)
+                                {
+                                    Console.WriteLine("COntains");
+                                }
+                            }
+                        }
+
+                        if (this.MainCircuit.AdjacencyList.ContainsKey(closestNode.ConnectedComponent) && this.MainCircuit.AdjacencyList[closestNode.ConnectedComponent].Contains((this.SelectedNodeObject).ConnectedComponent))
                         {
                             foreach (Wire wire in this.MainCircuit.WireToNodes.Keys)
                             {
-                                if (this.MainCircuit.WireToNodes[wire].Contains(closestNode) && this.MainCircuit.WireToNodes[wire].Contains((Node) this.SelectedNode.Tag))
+                                if (this.MainCircuit.WireToNodes[wire].Contains(closestNode) && this.MainCircuit.WireToNodes[wire].Contains(this.SelectedNodeObject))
                                 {
                                     wire.DeleteThisConnection();
                                     break;
                                 }
                             }
                         }
-                        this.SelectedWire.ConnectSecondNode(closestNode);
+                        else
+                        {
+                            this.SelectedWire.ConnectSecondNode(closestNode);
+                        }
                     }
                     else { this.SelectedWire.RemoveLine(); }
                     this.SelectedWire = null;

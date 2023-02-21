@@ -30,6 +30,7 @@ namespace Real_NEA_Circuit_Simulator
 
         public void AddNode(Node node)
         {
+            if (node == null) { return; }
             this.ConnectedNodes.Add(node);
             node.ConnectedWires.Add(this);
         }
@@ -104,7 +105,14 @@ namespace Real_NEA_Circuit_Simulator
             {
                 this.MainCircuit.AdjacencyList.Add(this.ConnectedNodes[0].ConnectedComponent, new List<Component>());
             }
-            this.MainCircuit.AdjacencyList[this.ConnectedNodes[0].ConnectedComponent].Add(this.ConnectedNodes[1].ConnectedComponent);
+            this.MainCircuit.AdjacencyList[this.ConnectedNodes[0].ConnectedComponent].Add(node2.ConnectedComponent);
+
+            if (!this.MainCircuit.AdjacencyList.ContainsKey(node2.ConnectedComponent))
+            {
+                this.MainCircuit.AdjacencyList.Add(node2.ConnectedComponent, new List<Component>());
+            }
+            this.MainCircuit.AdjacencyList[node2.ConnectedComponent].Add(this.ConnectedNodes[0].ConnectedComponent);
+
             this.MainCircuit.WireToNodes[this].Add(ConnectedNodes[1]);
         }
 
