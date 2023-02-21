@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
+using System.Linq;
 
 namespace Real_NEA_Circuit_Simulator
 {
@@ -105,6 +106,17 @@ namespace Real_NEA_Circuit_Simulator
                     if (closestNodeImage != null)
                     {
                         Node closestNode = (Node)closestNodeImage.Tag;
+                        if (this.MainCircuit.AdjacencyList.Keys.Contains(closestNode.ConnectedComponent) && this.MainCircuit.AdjacencyList[closestNode.ConnectedComponent].Contains(((Node) this.SelectedNode.Tag).ConnectedComponent))
+                        {
+                            foreach (Wire wire in this.MainCircuit.WireToNodes.Keys)
+                            {
+                                if (this.MainCircuit.WireToNodes[wire].Contains(closestNode) && this.MainCircuit.WireToNodes[wire].Contains((Node) this.SelectedNode.Tag))
+                                {
+                                    wire.DeleteThisConnection();
+                                    break;
+                                }
+                            }
+                        }
                         this.SelectedWire.ConnectSecondNode(closestNode);
                     }
                     else { this.SelectedWire.RemoveLine(); }

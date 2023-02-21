@@ -78,10 +78,21 @@ namespace Real_NEA_Circuit_Simulator
             
         }
 
+        public void DeleteThisConnection()
+        {
+            this.ConnectedNodes[0].ConnectedWires.Remove(this);
+            this.ConnectedNodes[1].ConnectedWires.Remove(this);
+            this.MainCircuit.MainCanvas.Children.Remove(this.line);
+            this.line = null;
+            this.MainCircuit.AdjacencyList[this.ConnectedNodes[0].ConnectedComponent].Remove(this.ConnectedNodes[1].ConnectedComponent);
+            this.MainCircuit.WireToNodes.Remove(this);
+            this.ConnectedNodes.Clear();
+        }
+
         public void ConnectSecondNode(Node node2)
         {
             if (this.line == null) { return; }
-            if (node2.ConnectedComponent == this.ConnectedNodes[0].ConnectedComponent || (node2 != node2.ConnectedComponent.ConnectedNodes[0] && this.ConnectedNodes[0] != this.ConnectedNodes[0].ConnectedComponent.ConnectedNodes[0]))
+            if (node2.ConnectedComponent == this.ConnectedNodes[0].ConnectedComponent || (node2 != node2.ConnectedComponent.ConnectedNodes[0] && this.ConnectedNodes[0] != this.ConnectedNodes[0].ConnectedComponent.ConnectedNodes[0]) || (node2 != node2.ConnectedComponent.ConnectedNodes[1] && this.ConnectedNodes[0] != this.ConnectedNodes[0].ConnectedComponent.ConnectedNodes[1]))
             {
                 this.RemoveLine();
                 return;
