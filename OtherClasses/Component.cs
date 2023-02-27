@@ -13,16 +13,14 @@ namespace Real_NEA_Circuit_Simulator
 {
     public class Component
     {
-        public Circuit MainCircuit { get; private set;}
-        public string type { get; private set;}
-        public List<Node> ConnectedNodes {get; private set;}
-        public string name { get; private set; }
-        private Image? image;
-        public Component(string name, string type, Circuit circuit)
+        public Circuit MainCircuit { get; protected set;}
+        public List<Node> ConnectedNodes {get; protected set;}
+        public string name { get; protected set; }
+        protected Image? image;
+        public Component(string name, Circuit circuit)
         {
             this.image = null;
             this.MainCircuit = circuit;
-            this.type = type;
             this.name = name;
             this.ConnectedNodes = new List<Node>() { new Node(name + "0", this), new Node(name + "1", this) };
         }
@@ -45,7 +43,7 @@ namespace Real_NEA_Circuit_Simulator
         public void RenderFirst(Point position)
         {
             Image image = new Image();
-            image.Source = new BitmapImage(new Uri($"../Assets/ComponentIcons/{this.type}.png", UriKind.Relative));
+            image.Source = new BitmapImage(new Uri($"../Assets/ComponentIcons/{this.GetType().Name}.png", UriKind.Relative));
             image.Tag = this;
             Canvas canvas = this.MainCircuit.MainCanvas;
             canvas.Children.Add(image);
@@ -93,7 +91,6 @@ namespace Real_NEA_Circuit_Simulator
 
                 foreach (Node node in this.ConnectedNodes)
                 {
-
                     foreach (Wire wire in node.ConnectedWires)
                     {
                         if (wire.ConnectedNodes[0] == node)

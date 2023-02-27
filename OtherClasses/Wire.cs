@@ -45,6 +45,7 @@ namespace Real_NEA_Circuit_Simulator
 
         public void RenderWithOneNode()
         {
+            this.ConnectedNodes[0].AddWire(this);
             Line newLine = new Line();
             newLine.X1 = Canvas.GetLeft(this.ConnectedNodes[0].image) + (int) this.ConnectedNodes[0].image.ActualWidth/2;
             newLine.Y1 = Canvas.GetTop(this.ConnectedNodes[0].image) + (int) this.ConnectedNodes[0].image.ActualHeight / 2;
@@ -54,8 +55,11 @@ namespace Real_NEA_Circuit_Simulator
             newLine.Stroke = new SolidColorBrush(Colors.Black);
             this.MainCircuit.MainCanvas.Children.Add(newLine);
             this.line = newLine;
-            this.MainCircuit.WireToNodes.Add(this, new List<Node>());
-            this.MainCircuit.WireToNodes[this].Add(ConnectedNodes[0]);
+            if (!this.MainCircuit.WireToNodes.ContainsKey(this))
+            {
+                this.MainCircuit.WireToNodes.Add(this, new List<Node>());
+                this.MainCircuit.WireToNodes[this].Add(ConnectedNodes[0]);
+            }
         }
 
         public void MoveOneNodeLine(Point position2)
@@ -81,8 +85,10 @@ namespace Real_NEA_Circuit_Simulator
 
         public void DeleteThisConnection()
         {
-            this.ConnectedNodes[0].ConnectedWires.Remove(this);
-            this.ConnectedNodes[1].ConnectedWires.Remove(this);
+            foreach (Node node in this.ConnectedNodes)
+            {
+                node.ConnectedWires.Remove(this);
+            }
             this.MainCircuit.MainCanvas.Children.Remove(this.line);
             this.line = null;
             this.MainCircuit.AdjacencyList[this.ConnectedNodes[0].ConnectedComponent].Remove(this.ConnectedNodes[1].ConnectedComponent);
@@ -114,6 +120,8 @@ namespace Real_NEA_Circuit_Simulator
             this.MainCircuit.AdjacencyList[node2.ConnectedComponent].Add(this.ConnectedNodes[0].ConnectedComponent);
 
             this.MainCircuit.WireToNodes[this].Add(ConnectedNodes[1]);
+            this.name = this.name.Substring(0, this.name.Length - 4) + node2.name;
+
         }
 
     }

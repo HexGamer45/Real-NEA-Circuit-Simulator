@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Real_NEA_Circuit_Simulator.OtherClasses
 {
-    internal class ComponentInfo
+    public class ComponentInfo
     {
         public float Resistance {get; private set;}
         public float WorkingVoltage {get; private set;}

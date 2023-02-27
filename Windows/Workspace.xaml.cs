@@ -10,6 +10,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
 using System.Linq;
+using Microsoft.Win32;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses;
 
 namespace Real_NEA_Circuit_Simulator
 {
@@ -28,6 +32,7 @@ namespace Real_NEA_Circuit_Simulator
         private bool LeftDown;
         private float MiddleRelativeX;
         private float MiddleRelativeY;
+        private Dictionary<Type, string> componentTypeToString;
 
         public Workspace()
         {
@@ -42,23 +47,42 @@ namespace Real_NEA_Circuit_Simulator
             this.MiddleDown = false;
             this.MiddleRelativeX = 0;
             this.MiddleRelativeY = 0;
+            this.componentTypeToString = new Dictionary<Type, string>()
+            {
+                { typeof(LED), "LED" },
+                { typeof(FixedResistor), "FixedResistor" }
+            };
         }
 
-        private void GenerateNewComponent(object sender, RoutedEventArgs e)
+        private void GenerateNewLED(object sender, RoutedEventArgs eventArgs)
         {
-            Button button = (Button) sender;
-            string tag = (string)button.Tag;
             int count = 0;
             foreach (Component component in this.MainCircuit.ComponentsList)
             {
-                if (component.type == tag)
+                if (component is LED)
                 {
                     count++;
                 }
             }
-            Component newComponent = new Component(tag+$"{count.ToString()}", tag, this.MainCircuit);
+            LED newComponent = new LED("LED" + count.ToString(), this.MainCircuit);
             this.MainCircuit.ComponentsList.Add(newComponent);
-            Point position = new Point((int)MainCanvas.ActualWidth/2, (int)MainCanvas.ActualHeight/2);
+            Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
+            newComponent.RenderFirst(position);
+        }
+
+        private void GenerateNewFixedResistor(object sender, RoutedEventArgs eventArgs)
+        {
+            int count = 0;
+            foreach (Component component in this.MainCircuit.ComponentsList)
+            {
+                if (component is FixedResistor)
+                {
+                    count++;
+                }
+            }
+            FixedResistor newComponent = new FixedResistor("FixedResistor" + count.ToString(), this.MainCircuit);
+            this.MainCircuit.ComponentsList.Add(newComponent);
+            Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
             newComponent.RenderFirst(position);
         }
 
@@ -81,14 +105,13 @@ namespace Real_NEA_Circuit_Simulator
             {
                 this.LeftDown = true;
                 this.SelectedNode = this.GetClosestNode();
-                if (this.SelectedNodeObject!= null ) { this.SelectedNodeObject = (Node)this.SelectedNode.Tag; }
+                if (this.SelectedNode!= null ) { this.SelectedNodeObject = (Node)this.SelectedNode.Tag; }
                 
                 Image? closestImage = this.SelectedNode;
                 if (closestImage != null)
                 {
                     Wire newWire = new Wire(((Node)closestImage.Tag).name + "-temp", new List<Node>() {(Node)closestImage.Tag}, this.MainCircuit);
                     newWire.RenderWithOneNode();
-                    newWire.AddNode(this.SelectedNodeObject);
                     this.SelectedWire = newWire;
                 }
             }
@@ -96,12 +119,12 @@ namespace Real_NEA_Circuit_Simulator
 
         private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (this.MiddleDown)
+            if (this.MiddleDown && e.MiddleButton == MouseButtonState.Released)
             {
                 this.MiddleDown = false;
                 this.SelectedComponent = null;
             }
-            if (this.LeftDown)
+            if (this.LeftDown && e.LeftButton == MouseButtonState.Released)
             {
                 this.LeftDown = false;
                 if (this.SelectedWire != null)
@@ -110,34 +133,19 @@ namespace Real_NEA_Circuit_Simulator
                     if (closestNodeImage != null)
                     {
                         Node closestNode = (Node) closestNodeImage.Tag;
-                        this.SelectedNodeObject = closestNode;
-                        if (this.MainCircuit.AdjacencyList.ContainsKey(closestNode.ConnectedComponent))
+                        foreach (Wire wire in closestNode.ConnectedWires)
                         {
-                            foreach (Component component in this.MainCircuit.AdjacencyList[closestNode.ConnectedComponent])
+                            if (wire.ConnectedNodes.Contains(this.SelectedNodeObject))
                             {
-                                Console.WriteLine(component.name);
-                                if (component == closestNode.ConnectedComponent)
-                                {
-                                    Console.WriteLine("COntains");
-                                }
+                                wire.DeleteThisConnection();
+                                this.SelectedWire.RemoveLine();
+                                this.SelectedWire = null;
+                                return;
                             }
-                        }
 
-                        if (this.MainCircuit.AdjacencyList.ContainsKey(closestNode.ConnectedComponent) && this.MainCircuit.AdjacencyList[closestNode.ConnectedComponent].Contains((this.SelectedNodeObject).ConnectedComponent))
-                        {
-                            foreach (Wire wire in this.MainCircuit.WireToNodes.Keys)
-                            {
-                                if (this.MainCircuit.WireToNodes[wire].Contains(closestNode) && this.MainCircuit.WireToNodes[wire].Contains(this.SelectedNodeObject))
-                                {
-                                    wire.DeleteThisConnection();
-                                    break;
-                                }
-                            }
                         }
-                        else
-                        {
-                            this.SelectedWire.ConnectSecondNode(closestNode);
-                        }
+                        this.SelectedWire.ConnectSecondNode(closestNode);
+
                     }
                     else { this.SelectedWire.RemoveLine(); }
                     this.SelectedWire = null;
@@ -250,5 +258,78 @@ namespace Real_NEA_Circuit_Simulator
             }
         }
 
+        private void Load(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.InitialDirectory = @"C:\";
+            openFileDialog.Title = "Select file to load";
+            openFileDialog.DefaultExt = "json";
+            openFileDialog.Filter = "Json file (*.json)|*.json";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string filepath = openFileDialog.FileName;
+                Console.WriteLine(filepath);
+            }
+        }
+
+        private void Save(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        public void ImportFile(string filename)
+        {
+            if (filename.EndsWith(".json"))
+            {
+                Dictionary<string, Dictionary<string, object>>? incoming = new Dictionary<string, Dictionary<string, object>>();
+                using (StreamReader r = new StreamReader(filename))
+                {
+                    string data = r.ReadToEnd();
+                    incoming = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(data);
+                    if (incoming != null)
+                    {
+                        foreach (KeyValuePair<string,object> componentNameDataPair in incoming["Components"])
+                        {
+                            JsonElement rawComponentData =(JsonElement) componentNameDataPair.Value;
+                            Dictionary<string,string>? componentData = rawComponentData.Deserialize<Dictionary<string, string>>();
+                            if (componentData != null)
+                            {
+                                if (componentData["Type"] == "LED")
+                                {
+                                    LED newComponent = new LED(componentNameDataPair.Key, MainCircuit);
+                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                    newComponent.RenderFirst(position);
+                                    this.MainCircuit.ComponentsList.Add(newComponent);
+                                }
+                                else if(componentData["Type"] == "FixedResistor")
+                                {
+                                    FixedResistor newComponent = new FixedResistor(componentNameDataPair.Key, MainCircuit);
+                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                    newComponent.RenderFirst(position);
+                                    this.MainCircuit.ComponentsList.Add(newComponent);
+                                }
+                            }
+
+                        }
+                        foreach (KeyValuePair<string, object> componentNameDataPair in incoming["AdjacencyList"])
+                        {
+                            JsonElement rawConnections = (JsonElement)componentNameDataPair.Value;
+                            List<int>? neighbours = rawConnections.Deserialize<List<int>>();
+                            if (neighbours != null && neighbours.Count > 0)
+                            {
+                                Component currentComponent = this.MainCircuit.ComponentsList[Convert.ToInt16(componentNameDataPair.Key)];
+                                foreach (int neighbourIndex in neighbours)
+                                {
+                                    Component neighbour = this.MainCircuit.ComponentsList[Convert.ToInt16(neighbourIndex)];
+                                    this.MainCircuit.AdjacencyList.Add(currentComponent, new List<Component>());
+                                    this.MainCircuit.AdjacencyList[currentComponent].Add(neighbour);
+                                    //Won't work because input and output node have to be chosen, in json files change adjacency list from list of component indicies to 2d list [a:b] where a is index and b is the input/output node (0/1)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,7 +26,7 @@ namespace Real_NEA_Circuit_Simulator
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void NewProject(object sender, RoutedEventArgs e)
         {
             Workspace workspace = new Workspace();
             workspace.WindowState = WindowState.Maximized;
@@ -33,9 +34,24 @@ namespace Real_NEA_Circuit_Simulator
             this.Close();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void OpenProject(object sender, RoutedEventArgs e)
         {
-
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.InitialDirectory = @"C:\";
+            openFileDialog.Title = "Select file to load";
+            openFileDialog.DefaultExt = "json";
+            openFileDialog.Filter = "Json file (*.json)|*.json";
+            string filepath = "";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                filepath = openFileDialog.FileName;
+            }
+            else { return; }
+            Workspace workspace = new Workspace();
+            workspace.ImportFile(filepath);
+            workspace.WindowState = WindowState.Maximized;
+            workspace.Show();
+            this.Close();
         }
     }
 }

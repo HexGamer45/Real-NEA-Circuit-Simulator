@@ -30,7 +30,7 @@
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="0">
                         <StackPanel x:Name="ComponentInsertionPanelLeft" HorizontalAlignment="Stretch" Background="{StaticResource ComponentInsertionBackground}" Margin="5,5,5,5">
-                            <Button Click="GenerateNewComponent" Tag="LED" HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                            <Button Click="GenerateNewLED" HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
                                     <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/LED.png"/>
                                 </StackPanel>
@@ -39,7 +39,7 @@
                     </Grid>
                     <Grid Grid.Column="1">
                         <StackPanel x:Name="ComponentInsertionPanelRight" HorizontalAlignment="Stretch" Background="{StaticResource ComponentInsertionBackground}" Margin="5,5,5,5">
-                            <Button Click="GenerateNewComponent" Tag="FixedResistor" HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
+                            <Button Click="GenerateNewFixedResistor" HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Margin="0,5,0,5">
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/Assets/ComponentIcons/FixedResistor.png"/>
                                 </StackPanel>
@@ -55,7 +55,14 @@
             </Border>
         </Grid>
         <Grid Grid.Column="2" Grid.Row="1" Background="{StaticResource ComponentInfoTabBackground}">
-
+            <StackPanel>
+                <Button Click="Save" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,5" Width="Auto" Height="40">
+                    Save
+                </Button>
+                <Button Click="Load" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,5" Width="Auto" Height="40">
+                    Load
+                </Button>
+            </StackPanel>
         </Grid>
     </Grid>
 

@@ -9,10 +9,10 @@
     <Grid>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
 
-            <Button Click="Button_Click" Width="271" Height="80" FontFamily="Bahnschrift" FontSize="25" Margin="10">
+            <Button Click="NewProject" Width="271" Height="80" FontFamily="Bahnschrift" FontSize="25" Margin="10">
                 New Project
             </Button>
-            <Button Click="Button_Click_1"  Width="271" Height="80" FontFamily="Bahnschrift" FontSize="25" Margin="10">
+            <Button Click="OpenProject"  Width="271" Height="80" FontFamily="Bahnschrift" FontSize="25" Margin="10">
                 Open Project
             </Button>
         </StackPanel>
