@@ -41,7 +41,12 @@ namespace Real_NEA_Circuit_Simulator
         public void RenderFirst(Point position)
         {
             Image image = new Image();
-            image.Source = new BitmapImage(new Uri($"../Assets/Node.png", UriKind.Relative));
+            string NodeColour = "red";
+            if (this.ConnectedComponent.ConnectedNodes[0] == this)
+            {
+                NodeColour = "blue";
+            }
+            //image.Source = this.ConnectedComponent.MainCircuit.MainCanvas. --use xaml resources
             double width = image.Source.Width;
             image.Tag = this;
             Canvas canvas = this.ConnectedComponent.MainCircuit.MainCanvas;

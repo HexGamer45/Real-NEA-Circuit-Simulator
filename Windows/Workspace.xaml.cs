@@ -14,6 +14,8 @@ using Microsoft.Win32;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses;
+using Newtonsoft.Json;
+using System.Windows.Navigation;
 
 namespace Real_NEA_Circuit_Simulator
 {
@@ -268,15 +270,96 @@ namespace Real_NEA_Circuit_Simulator
             if (openFileDialog.ShowDialog() == true)
             {
                 string filepath = openFileDialog.FileName;
-                Console.WriteLine(filepath);
+                this.ImportFile(filepath);
             }
         }
 
         private void Save(object sender, RoutedEventArgs e)
         {
-
+            Dictionary<string, Dictionary<string, string>> ComponentsToSave = new();
+            Dictionary<string, List<List<int>>> AdjacencyListToSave = new();
+            int Counter = 0;
+            foreach (Component currentComponent in this.MainCircuit.ComponentsList)
+            {
+                if (ComponentsToSave.ContainsKey(currentComponent.name))
+                {
+                    MessageBox.Show("Unable to save file, because one or more components have the same name.", "Save error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                ComponentsToSave.Add(currentComponent.name, new Dictionary<string,string>());
+                string[] typePath = currentComponent.GetType().ToString().Split('.');
+                ComponentsToSave[currentComponent.name].Add("Type", currentComponent.GetType().Name);
+                ComponentsToSave[currentComponent.name].Add("Resistance", currentComponent.Resistance.ToString());
+                ComponentsToSave[currentComponent.name].Add("WorkingVoltage", currentComponent.WorkingVoltage.ToString());
+                ComponentsToSave[currentComponent.name].Add("PositionX", ((int)(Canvas.GetLeft(currentComponent.image) + currentComponent.image.ActualWidth/2 + currentComponent.ConnectedNodes[0].image.ActualWidth)).ToString());
+                ComponentsToSave[currentComponent.name].Add("PositionY", ((int)(Canvas.GetTop(currentComponent.image) + currentComponent.image.ActualHeight/2)).ToString());
+                AdjacencyListToSave.Add(Counter.ToString(), new List<List<int>>());
+                foreach (Component neighbour in this.MainCircuit.AdjacencyList[currentComponent])
+                {
+                    int neighbourIndex = this.MainCircuit.ComponentsList.IndexOf(neighbour);
+                    int inpOut = 0;
+                    foreach (Node node in neighbour.ConnectedNodes)
+                    {
+                        foreach (Wire wire in node.ConnectedWires)
+                        {
+                            foreach (Node node2 in wire.ConnectedNodes)
+                            {
+                                if (node2 != node)
+                                {
+                                    if (node2.ConnectedComponent == currentComponent)
+                                    {
+                                        inpOut = node.ConnectedComponent.ConnectedNodes.IndexOf(node);
+                                        AdjacencyListToSave[Counter.ToString()].Add(new List<int>() { neighbourIndex, inpOut });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                Counter += 1;
+            }
+            string jsonString = ConvertDictsToJsonString(ComponentsToSave, AdjacencyListToSave);
+            SaveFileDialog fileDialog = new SaveFileDialog();
+            fileDialog.DefaultExt = "json";
+            fileDialog.Filter = "Json file (*.json)|*.json";
+            fileDialog.FileName = "untitled";
+            fileDialog.ShowDialog();
+            File.WriteAllText(fileDialog.FileName, jsonString);
         }
 
+        public string ConvertDictsToJsonString(Dictionary<string, Dictionary<string, string>> Components, Dictionary<string, List<List<int>>> AdjacencyListToSave)
+        {
+            string jsonString = "{\"Components\":{";
+            foreach (string componentNameKey in Components.Keys)
+            {
+                Dictionary<string, string> component = Components[componentNameKey];
+                jsonString += "\"" + componentNameKey + "\":{";
+                foreach (string key in component.Keys)
+                {
+                    jsonString += "\"" + key + "\":\"" + component[key] + "\",";
+                }
+                jsonString = jsonString.Substring(0, jsonString.Length - 1);
+                jsonString += "},";
+            }
+            jsonString = jsonString.Substring(0, jsonString.Length - 2);
+            jsonString += "}},";
+
+            jsonString += "\"AdjacencyList\":{";
+            foreach (string index in AdjacencyListToSave.Keys) 
+            {
+                jsonString += "\"" + index + "\":[";
+                foreach (List<int> neighbourAndNode in AdjacencyListToSave[index])
+                {
+                    jsonString += "[" + neighbourAndNode[0] + "," + neighbourAndNode[1] + "],";
+                }
+                jsonString = jsonString.Substring(0,jsonString.Length-2);
+                jsonString += "]],";
+            }
+            jsonString = jsonString.Substring(0, jsonString.Length - 2);
+            jsonString += "]}}";
+            Console.WriteLine(jsonString);
+            return jsonString;
+        }
         public void ImportFile(string filename)
         {
             if (filename.EndsWith(".json"))
@@ -285,7 +368,7 @@ namespace Real_NEA_Circuit_Simulator
                 using (StreamReader r = new StreamReader(filename))
                 {
                     string data = r.ReadToEnd();
-                    incoming = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(data);
+                    incoming = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(data);
                     if (incoming != null)
                     {
                         foreach (KeyValuePair<string,object> componentNameDataPair in incoming["Components"])
@@ -314,16 +397,31 @@ namespace Real_NEA_Circuit_Simulator
                         foreach (KeyValuePair<string, object> componentNameDataPair in incoming["AdjacencyList"])
                         {
                             JsonElement rawConnections = (JsonElement)componentNameDataPair.Value;
-                            List<int>? neighbours = rawConnections.Deserialize<List<int>>();
+                            List<List<int>>? neighbours = rawConnections.Deserialize<List<List<int>>>();
                             if (neighbours != null && neighbours.Count > 0)
                             {
                                 Component currentComponent = this.MainCircuit.ComponentsList[Convert.ToInt16(componentNameDataPair.Key)];
-                                foreach (int neighbourIndex in neighbours)
+                                if (!this.MainCircuit.AdjacencyList.ContainsKey(currentComponent))
                                 {
-                                    Component neighbour = this.MainCircuit.ComponentsList[Convert.ToInt16(neighbourIndex)];
                                     this.MainCircuit.AdjacencyList.Add(currentComponent, new List<Component>());
-                                    this.MainCircuit.AdjacencyList[currentComponent].Add(neighbour);
-                                    //Won't work because input and output node have to be chosen, in json files change adjacency list from list of component indicies to 2d list [a:b] where a is index and b is the input/output node (0/1)
+                                    foreach (List<int> neighbourDat in neighbours)
+                                    {
+                                        int inpOut = 0;
+                                        if (neighbourDat[1] == 0)
+                                        {
+                                            inpOut = 1;
+                                        }
+
+                                        int neighbourIndex = neighbourDat[0];
+                                        Component neighbour = this.MainCircuit.ComponentsList[Convert.ToInt16(neighbourIndex)];
+                                        if (!this.MainCircuit.AdjacencyList.ContainsKey(neighbour))
+                                        {
+                                            this.MainCircuit.AdjacencyList.Add(neighbour, new List<Component>());
+                                        }
+                                        Wire newWire = new Wire(currentComponent.name + inpOut + "-" + neighbour.name + neighbourDat[1], new List<Node>() { currentComponent.ConnectedNodes[inpOut] }, MainCircuit);
+                                        newWire.RenderWithOneNode();
+                                        newWire.ConnectSecondNode(neighbour.ConnectedNodes[neighbourDat[1]]);
+                                    }
                                 }
                             }
                         }
@@ -331,5 +429,6 @@ namespace Real_NEA_Circuit_Simulator
                 }
             }
         }
+
     }
 }

@@ -13,10 +13,12 @@ namespace Real_NEA_Circuit_Simulator
 {
     public class Component
     {
+        public float Resistance { get; private set; }
+        public float WorkingVoltage { get; private set; }
         public Circuit MainCircuit { get; protected set;}
         public List<Node> ConnectedNodes {get; protected set;}
         public string name { get; protected set; }
-        protected Image? image;
+        public Image? image { get; private set; }
         public Component(string name, Circuit circuit)
         {
             this.image = null;
