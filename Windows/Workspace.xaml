@@ -66,6 +66,9 @@
                 <Button Click="Load" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,5" Width="Auto" Height="40">
                     Load
                 </Button>
+                <Button Click="SimulateCircuit" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,5" Width="Auto" Height="40">
+                    Simulate
+                </Button>
             </StackPanel>
         </Grid>
     </Grid>

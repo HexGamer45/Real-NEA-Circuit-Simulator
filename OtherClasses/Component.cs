@@ -13,12 +13,11 @@ namespace Real_NEA_Circuit_Simulator
 {
     public class Component
     {
-        public float Resistance { get; private set; }
-        public float WorkingVoltage { get; private set; }
+        public float Resistance { get; protected set; }
         public Circuit MainCircuit { get; protected set;}
         public List<Node> ConnectedNodes {get; protected set;}
         public string name { get; protected set; }
-        public Image? image { get; private set; }
+        public Image? image { get; protected set; }
         public Component(string name, Circuit circuit)
         {
             this.image = null;
@@ -27,7 +26,10 @@ namespace Real_NEA_Circuit_Simulator
             this.ConnectedNodes = new List<Node>() { new Node(name + "0", this), new Node(name + "1", this) };
         }
 
-
+        public void SetResistance(float resistance)
+        {
+            this.Resistance = resistance;
+        }
         public void AddNode(Node node)
         {
             this.ConnectedNodes.Add(node);
@@ -108,6 +110,11 @@ namespace Real_NEA_Circuit_Simulator
                     }
                 }
             }
+        }
+
+        public float VoltageChange(float current)
+        {
+            return -this.Resistance * current;
         }
 
 

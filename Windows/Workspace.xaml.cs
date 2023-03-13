@@ -132,7 +132,7 @@ namespace Real_NEA_Circuit_Simulator
                 if (this.SelectedWire != null)
                 {
                     Image? closestNodeImage = GetClosestNode();
-                    if (closestNodeImage != null)
+                    if (closestNodeImage != null && closestNodeImage != this.SelectedNode)
                     {
                         Node closestNode = (Node) closestNodeImage.Tag;
                         foreach (Wire wire in closestNode.ConnectedWires)
@@ -260,6 +260,50 @@ namespace Real_NEA_Circuit_Simulator
             }
         }
 
+        private void SimulateCircuit(object sender, RoutedEventArgs e)
+        {
+            Dictionary<Component, List<Component>> UsableCircuit = this.MainCircuit.RemoveNonCircuitComponents();
+            float voltage = 0f;
+            float totalResistance = 0f;
+            float totalVoltage = 0f;
+            foreach (Component component in UsableCircuit.Keys)
+            {
+                totalResistance += component.Resistance;
+            }
+            foreach (Component component in UsableCircuit.Keys)
+            {
+                if (component is Cell)
+                {
+                    totalVoltage += ((Cell) component).Voltage;
+                }
+            }
+            float current = totalVoltage / totalResistance;
+            foreach (Component component in UsableCircuit.Keys)
+            {
+                voltage += component.VoltageChange(current);
+            }
+            if (voltage < totalVoltage)
+            {
+                Console.WriteLine("Not Enough PD");
+            }
+            else if (voltage == totalVoltage)
+            {
+                Console.WriteLine("Functions Properly");
+            }
+            else
+            {
+                Console.WriteLine("Too MUCH PD GONNA EXPLODE OR BE TOO BRIGHT OR SMTH");
+            }
+        }
+
+        private void ClearSelf()
+        {
+            this.MainCanvas.Children.Clear();
+            this.MainCircuit.ComponentsList.Clear();
+            this.MainCircuit.WireToNodes.Clear();
+            this.MainCircuit.AdjacencyList.Clear();
+        }
+
         private void Load(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -270,6 +314,7 @@ namespace Real_NEA_Circuit_Simulator
             if (openFileDialog.ShowDialog() == true)
             {
                 string filepath = openFileDialog.FileName;
+                this.ClearSelf();
                 this.ImportFile(filepath);
             }
         }
@@ -290,8 +335,7 @@ namespace Real_NEA_Circuit_Simulator
                 string[] typePath = currentComponent.GetType().ToString().Split('.');
                 ComponentsToSave[currentComponent.name].Add("Type", currentComponent.GetType().Name);
                 ComponentsToSave[currentComponent.name].Add("Resistance", currentComponent.Resistance.ToString());
-                ComponentsToSave[currentComponent.name].Add("WorkingVoltage", currentComponent.WorkingVoltage.ToString());
-                ComponentsToSave[currentComponent.name].Add("PositionX", ((int)(Canvas.GetLeft(currentComponent.image) + currentComponent.image.ActualWidth/2 + currentComponent.ConnectedNodes[0].image.ActualWidth)).ToString());
+                ComponentsToSave[currentComponent.name].Add("PositionX", ((int)(Canvas.GetLeft(currentComponent.image) + currentComponent.image.ActualWidth/2)).ToString());
                 ComponentsToSave[currentComponent.name].Add("PositionY", ((int)(Canvas.GetTop(currentComponent.image) + currentComponent.image.ActualHeight/2)).ToString());
                 AdjacencyListToSave.Add(Counter.ToString(), new List<List<int>>());
                 foreach (Component neighbour in this.MainCircuit.AdjacencyList[currentComponent])
@@ -380,6 +424,7 @@ namespace Real_NEA_Circuit_Simulator
                                 {
                                     LED newComponent = new LED(componentNameDataPair.Key, MainCircuit);
                                     Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
                                     newComponent.RenderFirst(position);
                                     this.MainCircuit.ComponentsList.Add(newComponent);
                                 }
@@ -387,6 +432,7 @@ namespace Real_NEA_Circuit_Simulator
                                 {
                                     FixedResistor newComponent = new FixedResistor(componentNameDataPair.Key, MainCircuit);
                                     Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
                                     newComponent.RenderFirst(position);
                                     this.MainCircuit.ComponentsList.Add(newComponent);
                                 }
