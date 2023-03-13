@@ -357,7 +357,6 @@ namespace Real_NEA_Circuit_Simulator
             }
             jsonString = jsonString.Substring(0, jsonString.Length - 2);
             jsonString += "]}}";
-            Console.WriteLine(jsonString);
             return jsonString;
         }
         public void ImportFile(string filename)
@@ -404,23 +403,27 @@ namespace Real_NEA_Circuit_Simulator
                                 if (!this.MainCircuit.AdjacencyList.ContainsKey(currentComponent))
                                 {
                                     this.MainCircuit.AdjacencyList.Add(currentComponent, new List<Component>());
-                                    foreach (List<int> neighbourDat in neighbours)
+                                }
+                                foreach (List<int> neighbourDat in neighbours)
+                                {
+                                    int inpOut = 0;
+                                    if (neighbourDat[1] == 0)
                                     {
-                                        int inpOut = 0;
-                                        if (neighbourDat[1] == 0)
-                                        {
-                                            inpOut = 1;
-                                        }
+                                        inpOut = 1;
+                                    }
 
-                                        int neighbourIndex = neighbourDat[0];
-                                        Component neighbour = this.MainCircuit.ComponentsList[Convert.ToInt16(neighbourIndex)];
-                                        if (!this.MainCircuit.AdjacencyList.ContainsKey(neighbour))
-                                        {
-                                            this.MainCircuit.AdjacencyList.Add(neighbour, new List<Component>());
-                                        }
+                                    int neighbourIndex = neighbourDat[0];
+                                    Component neighbour = this.MainCircuit.ComponentsList[Convert.ToInt16(neighbourIndex)];
+                                    if (!this.MainCircuit.AdjacencyList.ContainsKey(neighbour))
+                                    {
+                                        this.MainCircuit.AdjacencyList.Add(neighbour, new List<Component>());
+                                    }
+                                    if (!this.MainCircuit.AdjacencyList[currentComponent].Contains(neighbour))
+                                    {
                                         Wire newWire = new Wire(currentComponent.name + inpOut + "-" + neighbour.name + neighbourDat[1], new List<Node>() { currentComponent.ConnectedNodes[inpOut] }, MainCircuit);
                                         newWire.RenderWithOneNode();
                                         newWire.ConnectSecondNode(neighbour.ConnectedNodes[neighbourDat[1]]);
+                                        Console.WriteLine(currentComponent.name + "<-->" + neighbour.name);
                                     }
                                 }
                             }

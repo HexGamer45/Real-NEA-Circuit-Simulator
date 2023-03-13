@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows;
 using Point = System.Drawing.Point;
+using System.Windows.Media;
 
 namespace Real_NEA_Circuit_Simulator
 {
@@ -41,12 +42,14 @@ namespace Real_NEA_Circuit_Simulator
         public void RenderFirst(Point position)
         {
             Image image = new Image();
-            string NodeColour = "red";
             if (this.ConnectedComponent.ConnectedNodes[0] == this)
             {
-                NodeColour = "blue";
+                image.Source = ((BitmapImage)Application.Current.FindResource("redNode"));
             }
-            //image.Source = this.ConnectedComponent.MainCircuit.MainCanvas. --use xaml resources
+            else
+            {
+                image.Source = ((BitmapImage)Application.Current.FindResource("blueNode"));
+            }
             double width = image.Source.Width;
             image.Tag = this;
             Canvas canvas = this.ConnectedComponent.MainCircuit.MainCanvas;

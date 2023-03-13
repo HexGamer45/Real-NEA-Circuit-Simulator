@@ -45,7 +45,7 @@ namespace Real_NEA_Circuit_Simulator
         public void RenderFirst(Point position)
         {
             Image image = new Image();
-            image.Source = new BitmapImage(new Uri($"../Assets/ComponentIcons/{this.GetType().Name}.png", UriKind.Relative));
+            image.Source = (BitmapImage) Application.Current.FindResource(this.GetType().Name);
             image.Tag = this;
             Canvas canvas = this.MainCircuit.MainCanvas;
             canvas.Children.Add(image);
