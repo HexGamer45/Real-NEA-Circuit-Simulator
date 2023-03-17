@@ -14,11 +14,5 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
             this.Resistance = 0f;
             this.Voltage = 3f;
         }
-
-        public virtual float VoltageChange(float current)
-        {
-            return this.Voltage - (this.Resistance * current);
-        }
-
     }
 }

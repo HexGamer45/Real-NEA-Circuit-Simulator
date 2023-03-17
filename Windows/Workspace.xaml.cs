@@ -16,6 +16,7 @@ using System.Text.Json;
 using Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses;
 using Newtonsoft.Json;
 using System.Windows.Navigation;
+using Real_NEA_Circuit_Simulator.OtherClasses;
 
 namespace Real_NEA_Circuit_Simulator
 {
@@ -34,7 +35,7 @@ namespace Real_NEA_Circuit_Simulator
         private bool LeftDown;
         private float MiddleRelativeX;
         private float MiddleRelativeY;
-        private Dictionary<Type, string> componentTypeToString;
+        private bool Simulating;
 
         public Workspace()
         {
@@ -49,15 +50,41 @@ namespace Real_NEA_Circuit_Simulator
             this.MiddleDown = false;
             this.MiddleRelativeX = 0;
             this.MiddleRelativeY = 0;
-            this.componentTypeToString = new Dictionary<Type, string>()
-            {
-                { typeof(LED), "LED" },
-                { typeof(FixedResistor), "FixedResistor" }
-            };
+            this.Simulating = false;
+            ComponentDataGrid.ItemsSource = DataGridHandler.LoadCollectionData();
+
+
         }
 
+        private void GenerateNewCell(object sender, RoutedEventArgs eventArgs)
+        {
+            if (this.Simulating) { return; }
+            int count = 0;
+            foreach (Component component in this.MainCircuit.ComponentsList)
+            {
+                if (component is Cell)
+                {
+                    count++;
+                }
+            }
+            Cell newComponent = new Cell("Cell" + count.ToString(), this.MainCircuit);
+            this.MainCircuit.ComponentsList.Add(newComponent);
+            Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
+            newComponent.RenderFirst(position);
+            DataGridHandler.AddNewComponentData(newComponent);
+            ComponentDataGrid.Items.Refresh();
+            foreach (ComponentDisplayData dat in ComponentDataGrid.ItemsSource)
+            {
+                Console.WriteLine(dat.Name);
+                Console.WriteLine(dat.Resistance);
+                Console.WriteLine(dat.Voltage);
+                Console.WriteLine(dat.Active);
+                Console.WriteLine("\n");
+            }
+        }
         private void GenerateNewLED(object sender, RoutedEventArgs eventArgs)
         {
+            if (this.Simulating) { return; }
             int count = 0;
             foreach (Component component in this.MainCircuit.ComponentsList)
             {
@@ -70,10 +97,13 @@ namespace Real_NEA_Circuit_Simulator
             this.MainCircuit.ComponentsList.Add(newComponent);
             Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
             newComponent.RenderFirst(position);
+            DataGridHandler.AddNewComponentData(newComponent);
+            ComponentDataGrid.Items.Refresh();
         }
 
         private void GenerateNewFixedResistor(object sender, RoutedEventArgs eventArgs)
         {
+            if (this.Simulating) { return; }
             int count = 0;
             foreach (Component component in this.MainCircuit.ComponentsList)
             {
@@ -86,10 +116,26 @@ namespace Real_NEA_Circuit_Simulator
             this.MainCircuit.ComponentsList.Add(newComponent);
             Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
             newComponent.RenderFirst(position);
+            DataGridHandler.AddNewComponentData(newComponent);
+            ComponentDataGrid.Items.Refresh();
         }
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (this.Simulating) 
+            { 
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    this.SelectedComponent = this.GetClosestComponent();
+                    Image? closestImage = this.SelectedComponent;
+                    if (closestImage != null)
+                    {
+                        Component SelectedComponentObject = (Component) closestImage.Tag;
+                        /*use component data to make table under right buttons*/
+                    }
+                }
+                return; 
+            }
             if (e.MiddleButton == MouseButtonState.Pressed)
             {
                 this.MiddleDown = true;
@@ -121,6 +167,7 @@ namespace Real_NEA_Circuit_Simulator
 
         private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (this.Simulating) { return; }
             if (this.MiddleDown && e.MiddleButton == MouseButtonState.Released)
             {
                 this.MiddleDown = false;
@@ -215,6 +262,7 @@ namespace Real_NEA_Circuit_Simulator
 
         private void Grid_MouseMove(object sender, MouseEventArgs e)
         {
+            if (this.Simulating) { return; }
             if (e.MiddleButton == MouseButtonState.Pressed && this.MouseInCanvas)
             {
                 Image? closestImage = this.SelectedComponent;
@@ -237,10 +285,7 @@ namespace Real_NEA_Circuit_Simulator
         {
             /*if (e.Key == Key.R)
             {
-                if (this.SelectedComponent != null)
-                {
-                    this.SelectedComponent = (Image)((BitmapImage)this.SelectedComponent)
-                }
+                if selectedcomponent exists then rotate 90 degrees.
             }*/
         }
 
@@ -262,40 +307,46 @@ namespace Real_NEA_Circuit_Simulator
 
         private void SimulateCircuit(object sender, RoutedEventArgs e)
         {
-            Dictionary<Component, List<Component>> UsableCircuit = this.MainCircuit.RemoveNonCircuitComponents();
-            float voltage = 0f;
-            float totalResistance = 0f;
-            float totalVoltage = 0f;
-            foreach (Component component in UsableCircuit.Keys)
+            if (this.Simulating == false)
             {
-                totalResistance += component.Resistance;
-            }
-            foreach (Component component in UsableCircuit.Keys)
-            {
-                if (component is Cell)
+                Dictionary<Component, List<Component>> UsableCircuit = this.MainCircuit.RemoveNonCircuitComponents();
+                if (UsableCircuit.Keys.Count < 2)
                 {
-                    totalVoltage += ((Cell) component).Voltage;
+                    return;
                 }
-            }
-            float current = totalVoltage / totalResistance;
-            foreach (Component component in UsableCircuit.Keys)
-            {
-                voltage += component.VoltageChange(current);
-            }
-            if (voltage < totalVoltage)
-            {
-                Console.WriteLine("Not Enough PD");
-            }
-            else if (voltage == totalVoltage)
-            {
-                Console.WriteLine("Functions Properly");
+                float totalVoltage = 0;
+                float totalResistance = 0;
+                foreach (Component component in UsableCircuit.Keys)
+                {
+                    totalResistance += component.Resistance;
+                    if (component is Cell)
+                    {
+                        totalVoltage += ((Cell)component).Voltage;
+                    }
+                }
+                foreach (Component component in UsableCircuit.Keys)
+                {
+                    component.PerformComponentFunction(totalVoltage, totalResistance);
+                }
+                Button button = (Button)sender;
+                button.Content = "Return to Editting";
+                this.Simulating = true;
             }
             else
             {
-                Console.WriteLine("Too MUCH PD GONNA EXPLODE OR BE TOO BRIGHT OR SMTH");
+                Button button = (Button)sender;
+                button.Content = "Simulate";
+                this.Simulating = false;
+                this.DisableCircuit();
             }
         }
-
+        private void DisableCircuit()
+        {
+            foreach (Component component in this.MainCircuit.ComponentsList)
+            {
+                component.DisableComponentFunction();
+            }
+        }
         private void ClearSelf()
         {
             this.MainCanvas.Children.Clear();
@@ -337,6 +388,10 @@ namespace Real_NEA_Circuit_Simulator
                 ComponentsToSave[currentComponent.name].Add("Resistance", currentComponent.Resistance.ToString());
                 ComponentsToSave[currentComponent.name].Add("PositionX", ((int)(Canvas.GetLeft(currentComponent.image) + currentComponent.image.ActualWidth/2)).ToString());
                 ComponentsToSave[currentComponent.name].Add("PositionY", ((int)(Canvas.GetTop(currentComponent.image) + currentComponent.image.ActualHeight/2)).ToString());
+                if (currentComponent is Cell)
+                {
+                    ComponentsToSave[currentComponent.name].Add("Voltage", ((Cell)currentComponent).Voltage.ToString());
+                }
                 AdjacencyListToSave.Add(Counter.ToString(), new List<List<int>>());
                 foreach (Component neighbour in this.MainCircuit.AdjacencyList[currentComponent])
                 {
@@ -436,6 +491,14 @@ namespace Real_NEA_Circuit_Simulator
                                     newComponent.RenderFirst(position);
                                     this.MainCircuit.ComponentsList.Add(newComponent);
                                 }
+                                else if (componentData["Type"] == "Cell")
+                                {
+                                    Cell newComponent = new Cell(componentNameDataPair.Key, MainCircuit);
+                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
+                                    newComponent.RenderFirst(position);
+                                    this.MainCircuit.ComponentsList.Add(newComponent);
+                                }
                             }
 
                         }
@@ -479,5 +542,9 @@ namespace Real_NEA_Circuit_Simulator
             }
         }
 
+        private void ComponentDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

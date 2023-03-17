@@ -13,6 +13,7 @@ namespace Real_NEA_Circuit_Simulator
 {
     public class Component
     {
+        public bool Active { get; private set; }
         public float Resistance { get; protected set; }
         public Circuit MainCircuit { get; protected set;}
         public List<Node> ConnectedNodes {get; protected set;}
@@ -24,6 +25,7 @@ namespace Real_NEA_Circuit_Simulator
             this.MainCircuit = circuit;
             this.name = name;
             this.ConnectedNodes = new List<Node>() { new Node(name + "0", this), new Node(name + "1", this) };
+            this.MainCircuit.AdjacencyList.Add(this, new List<Component>());
         }
 
         public void SetResistance(float resistance)
@@ -112,10 +114,27 @@ namespace Real_NEA_Circuit_Simulator
             }
         }
 
-        public float VoltageChange(float current)
+        public float getVoltageAvailable(float totalVoltage, float totalResistance)
         {
-            return -this.Resistance * current;
+            float accessedVolts = totalVoltage * this.Resistance / totalResistance;
+            return accessedVolts;
         }
+        public float getPowerAvailable(float totalVoltage, float totalResistance)
+        {
+            float power = (float)Math.Pow(this.getVoltageAvailable(totalVoltage,totalResistance), 2) / this.Resistance;
+            return power;
+        }
+
+        public virtual void PerformComponentFunction(float totalVoltage, float totalResistance)
+        {
+            this.Active = true;
+        }
+
+        public virtual void DisableComponentFunction()
+        {
+            this.Active = false;
+        }
+
 
 
     }

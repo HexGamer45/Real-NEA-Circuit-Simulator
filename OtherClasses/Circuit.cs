@@ -1,5 +1,6 @@
 ﻿﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,21 +61,45 @@ namespace Real_NEA_Circuit_Simulator
 
         private bool IsCyclic(Dictionary<Component, List<Component>> graph, Component start, Component component, HashSet<Component> visited, Component? prev)
         {
-             foreach (Component neighbour in graph[component])
-             {
-                 if (!visited.Contains(neighbour))
-                 {
-                     if (this.IsCyclic(graph, start, neighbour, visited, component))
-                     {
-                         return true;
-                     }
-                 }
-                 else if (neighbour!=prev && neighbour == start)
-                 {
-                     return true;
-                 }
-             }
-             return false;
+            visited.Add(component);
+            bool isCyclic = false;
+            foreach (Component neighbour in graph[component])
+            {
+                if (!visited.Contains(neighbour))
+                {
+                    if (this.IsCyclic(graph, start, neighbour, visited, component))
+                    {
+                        isCyclic = true;
+                    }
+                }
+                if (neighbour == start)
+                {
+                    int conns = 0;
+                    foreach (Node startNode in start.ConnectedNodes)
+                    {
+                        foreach (Wire wire in startNode.ConnectedWires)
+                        {
+                            foreach (Node secondNode in wire.ConnectedNodes)
+                            {
+                                if (neighbour.ConnectedNodes.Contains(secondNode))
+                                {
+                                    conns++;
+                                }
+                            }
+                        }
+                    }
+                    if (conns < 2)
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+            }
+            if (isCyclic)
+            {
+                return true;
+            }
+            return false;
         }
 
 
@@ -84,16 +109,39 @@ namespace Real_NEA_Circuit_Simulator
             List<Component> keylist = new(circuit.Keys);
             foreach (Component component in keylist)
             {
+                if (circuit.Keys.Count == 2)
+                {
+                    int wireCount = 0;
+                    foreach (Node node in circuit.Keys.ElementAt(0).ConnectedNodes)
+                    {
+                        foreach (Wire wire in node.ConnectedWires)
+                        {
+                            wireCount++;
+                            foreach (Node node2 in wire.ConnectedNodes)
+                            {
+                                if (node != node2 && !circuit.ContainsKey(node2.ConnectedComponent))
+                                {
+                                    wireCount--;
+                                }
+                            }
+                        }
+                    }
+                    if (wireCount == 2)
+                    {
+                        return circuit;
+                    }
+                    circuit.Clear();
+                    return circuit;
+                }
                 if (!this.IsCyclic(circuit, component, component, new HashSet<Component>(), null))
                 {
                     foreach (Component otherComponent in keylist)
                     {
-                        foreach (Component neighbour in circuit[otherComponent])
+                        if (otherComponent != component)
                         {
-                            if (neighbour == component)
+                            if (circuit.ContainsKey(otherComponent) && this.AdjacencyList[otherComponent].Contains(component))
                             {
-                                circuit[otherComponent].Remove(neighbour);
-                                break;
+                                circuit[otherComponent].Remove(component);
                             }
                         }
                     }

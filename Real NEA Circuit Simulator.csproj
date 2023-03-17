@@ -10,8 +10,10 @@
 
   <ItemGroup>
     <None Remove="Assets\blueNode.png" />
+    <None Remove="Assets\ComponentIcons\Cell.png" />
     <None Remove="Assets\ComponentIcons\FixedResistor.png" />
     <None Remove="Assets\ComponentIcons\LED.png" />
+    <None Remove="Assets\ComponentIcons\LitLED.png" />
     <None Remove="Assets\redNode.png" />
   </ItemGroup>
 
@@ -21,7 +23,11 @@
 
   <ItemGroup>
     <Resource Include="Assets\blueNode.png" />
+    <Resource Include="Assets\ComponentIcons\Cell.png" />
     <Resource Include="Assets\ComponentIcons\FixedResistor.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\ComponentIcons\LitLED.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\ComponentIcons\LED.png">

@@ -5,4 +5,6 @@
 
     <BitmapImage x:Key="FixedResistor" UriSource="/Assets/ComponentIcons/FixedResistor.png"/>
     <BitmapImage x:Key="LED" UriSource="/Assets/ComponentIcons/LED.png"/>
+    <BitmapImage x:Key="LitLED" UriSource="/Assets/ComponentIcons/LitLED.png"/>
+    <BitmapImage x:Key="Cell" UriSource="/Assets/ComponentIcons/Cell.png"/>
 </ResourceDictionary>

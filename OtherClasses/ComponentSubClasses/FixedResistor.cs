@@ -12,8 +12,5 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
         {
             this.Resistance = 300f;
         }
-        
-        
-
     }
 }
