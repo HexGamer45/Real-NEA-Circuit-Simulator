@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
+using System.Windows.Media;
 
 namespace Real_NEA_Circuit_Simulator.OtherClasses
 {
@@ -17,8 +18,6 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses
         public static void AddNewComponentData(Component component)
         {
             ComponentDisplayData data = new ComponentDisplayData(component);
-            Console.WriteLine(data.Name);
-
             DisplayData.Add(data);
 
         }
@@ -27,6 +26,11 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses
         {
             Console.WriteLine("Loaded");
             return DisplayData;
+        }
+
+        public static void Clear()
+        {
+            DisplayData.Clear();
         }
     }
 }

@@ -10,4 +10,7 @@
 
     <SolidColorBrush x:Key="ComponentInfoTabBackground" Color="#b0b0b0"/>
 
+    <SolidColorBrush x:Key="ComponentUnselected" Color="PaleVioletRed"/>
+    <SolidColorBrush x:Key="ComponentSelected" Color="PaleGreen"/>
+
 </ResourceDictionary>

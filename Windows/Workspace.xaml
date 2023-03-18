@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="Workspace" Height="450" Width="800">
     <Grid
+        x:Name="MainGrid"
         MouseDown="Grid_MouseDown"
         MouseUp="Grid_MouseUp"
         MouseMove="Grid_MouseMove"
@@ -69,9 +70,21 @@
                 <Button DockPanel.Dock="Top" Click="SimulateCircuit" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,5" Width="Auto" Height="40">
                     Simulate
                 </Button>
-                <Grid Width="Auto" Margin="0,5,0,10">
-                    <DataGrid x:Name="ComponentDataGrid" AutoGenerateColumns="True" IsReadOnly="False" ItemsSource="{Binding Path=DataGridHandler.DisplayData}" SelectionChanged="ComponentDataGrid_SelectionChanged">
+                <Grid x:Name="CurrentlySelectedGrid" Height="Auto" Width="Auto" DockPanel.Dock="Bottom" Background="{StaticResource ComponentUnselected}">
+                    <StackPanel>
+                        <TextBlock>
+                        Currently Selected:
+                        </TextBlock>
+                        <TextBlock x:Name="CurrentlySelectedName" Text="N/A"/>
+                    </StackPanel>
+                </Grid>
+                <Grid Width="Auto" Margin="0,5,0,10" DockPanel.Dock="Bottom">
+                    <DataGrid x:Name="ComponentDataGrid" AutoGenerateColumns="False" MaxColumnWidth="112" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" IsReadOnly="False">
                         <DataGrid.Columns>
+                            <DataGridTextColumn x:Name="Name" Header="Name" Binding="{Binding Name}"/>
+                            <DataGridTextColumn x:Name="Resistance" Header="Resistance" Binding="{Binding Resistance}"/>
+                            <DataGridTextColumn x:Name="Voltage" Header="Voltage" Binding="{Binding Voltage}"/>
+                            <DataGridTextColumn x:Name="Active" Header="Active" Binding="{Binding Active}" IsReadOnly="True"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows;
 using Point = System.Drawing.Point;
 using System.Windows.Media;
+using System.Xml.Linq;
 
 namespace Real_NEA_Circuit_Simulator
 {
@@ -64,18 +65,75 @@ namespace Real_NEA_Circuit_Simulator
             this.image = image;
         }
 
-        public void Move(Point position)
+        public void Move(Point position, int inpOut)
         {
             if (this.image != null)
             {
-                position.X -= (int)image.ActualWidth / 2;
-                if (position.X > this.ConnectedComponent.MainCircuit.MainCanvas.ActualWidth - this.image.ActualWidth) { position.X = (int)(this.ConnectedComponent.MainCircuit.MainCanvas.ActualWidth - this.image.ActualWidth); }
-                else if (position.X < 0) { position.X = 0; }
-                position.Y -= (int)image.ActualHeight / 2;
-                if (position.Y > this.ConnectedComponent.MainCircuit.MainCanvas.ActualHeight - this.image.ActualHeight) { position.Y = (int)(this.ConnectedComponent.MainCircuit.MainCanvas.ActualHeight - this.image.ActualHeight); }
-                else if (position.Y < 0) { position.Y = 0; }
-                Canvas.SetLeft(this.image, position.X);
-                Canvas.SetTop(this.image, position.Y);
+                if (this.ConnectedComponent.rotation == 0)
+                {
+                    if (inpOut == 0)
+                    {
+                        Canvas.SetLeft(this.image, position.X - this.image.ActualWidth/2);
+                        Canvas.SetTop(this.image, position.Y + this.ConnectedComponent.image.Source.Height /2 - this.image.ActualHeight / 2);
+                    }
+                    else
+                    {
+                        Canvas.SetLeft(this.image, position.X - this.image.ActualWidth / 2 + this.ConnectedComponent.image.Source.Width);
+                        Canvas.SetTop(this.image, position.Y + this.ConnectedComponent.image.Source.Height / 2 - this.image.ActualHeight / 2);
+                    }
+                }
+                else if(this.ConnectedComponent.rotation == 90)
+                {
+                    if (inpOut == 0)
+                    {
+                        Canvas.SetLeft(this.image, position.X + this.ConnectedComponent.image.Source.Width / 2 - this.image.ActualWidth / 2);
+                        Canvas.SetTop(this.image, position.Y - this.image.ActualHeight / 2);
+                    }
+                    else
+                    {
+                        Canvas.SetLeft(this.image, position.X + this.ConnectedComponent.image.Source.Width / 2 - this.image.ActualWidth / 2);
+                        Canvas.SetTop(this.image, position.Y - this.image.ActualHeight / 2 + this.ConnectedComponent.image.Source.Height);
+                    }
+                }
+                else if (this.ConnectedComponent.rotation == 180)
+                {
+                    if (inpOut == 1)
+                    {
+                        Canvas.SetLeft(this.image, position.X - this.image.ActualWidth / 2);
+                        Canvas.SetTop(this.image, position.Y + this.ConnectedComponent.image.Source.Height / 2 - this.image.ActualHeight / 2);
+                    }
+                    else
+                    {
+                        Canvas.SetLeft(this.image, position.X - this.image.ActualWidth / 2 + this.ConnectedComponent.image.Source.Width);
+                        Canvas.SetTop(this.image, position.Y + this.ConnectedComponent.image.Source.Height / 2 - this.image.ActualHeight / 2);
+                    }
+                }
+                else if (this.ConnectedComponent.rotation == 270)
+                {
+                    if (inpOut == 1)
+                    {
+                        Canvas.SetLeft(this.image, position.X);
+                        Canvas.SetTop(this.image, position.Y + this.ConnectedComponent.image.Source.Width / 2 - this.image.ActualHeight);
+                    }
+                    else
+                    {
+                        Canvas.SetLeft(this.image, position.X + this.ConnectedComponent.image.Source.Width / 2 - this.image.ActualWidth / 2);
+                        Canvas.SetTop(this.image, position.Y - this.image.ActualHeight / 2 + this.ConnectedComponent.image.Source.Height);
+                    }
+                }
+                foreach (Wire wire in this.ConnectedWires)
+                {
+                    if (wire.ConnectedNodes[0] == this)
+                    {
+                        wire.line.X1 = Canvas.GetLeft(this.image) + (int)this.image.ActualWidth / 2;
+                        wire.line.Y1 = Canvas.GetTop(this.image) + (int)this.image.ActualHeight / 2;
+                    }
+                    else
+                    {
+                        wire.line.X2 = Canvas.GetLeft(this.image) + (int)this.image.ActualWidth / 2;
+                        wire.line.Y2 = Canvas.GetTop(this.image) + (int)this.image.ActualHeight / 2;
+                    }
+                }
             }
         }
     }

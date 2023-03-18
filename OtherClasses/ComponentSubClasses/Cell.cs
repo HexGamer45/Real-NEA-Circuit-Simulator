@@ -14,5 +14,10 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
             this.Resistance = 0f;
             this.Voltage = 3f;
         }
+
+        public override void SetVoltage(float voltage)
+        {
+            this.Voltage = voltage;
+        }
     }
 }

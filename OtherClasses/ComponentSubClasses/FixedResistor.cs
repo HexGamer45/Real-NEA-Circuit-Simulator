@@ -10,7 +10,7 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
     {
         public FixedResistor(string name, Circuit circuit) : base(name, circuit)
         {
-            this.Resistance = 300f;
+            this.Resistance = 40f;
         }
     }
 }
