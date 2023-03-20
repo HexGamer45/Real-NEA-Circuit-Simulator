@@ -140,7 +140,7 @@ namespace Real_NEA_Circuit_Simulator
             {
                 this.rotation -= 360;
             }
-            RotateTransform rotation = new RotateTransform(degrees);
+            RotateTransform rotation = new RotateTransform(degrees) {CenterX=Canvas.GetLeft(this.image)+this.image.ActualWidth / 2,CenterY= Canvas.GetTop(this.image) + this.image.ActualHeight /2 };
             if (this.image.Source is TransformedBitmap)
             {
                 TransformedBitmap transformBmp = new TransformedBitmap();
@@ -160,11 +160,8 @@ namespace Real_NEA_Circuit_Simulator
                 this.image.Source = transformBmp;
             }
             Point position = new Point((int)Canvas.GetLeft(this.image), (int)Canvas.GetTop(this.image));
-
-
             this.ConnectedNodes[0].Move(position, 0);
             this.ConnectedNodes[1].Move(position, 1);
-            Console.WriteLine("Wacky");
         }
 
     }

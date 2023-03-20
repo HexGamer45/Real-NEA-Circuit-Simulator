@@ -358,16 +358,35 @@ namespace Real_NEA_Circuit_Simulator
                         totalVoltage += ((Cell)component).Voltage;
                     }
                 }
+                bool componentFailed = false;
                 foreach (Component component in UsableCircuit.Keys)
                 {
                     component.PerformComponentFunction(totalVoltage, totalResistance);
+                    if (component.Active == false)
+                    {
+                        componentFailed = true;
+                        string text = "One or more component(s) failed, this could be due to a lack of voltage from cells.";
+                        string caption = "Circuit Broken";
+                        MessageBoxButton messageButton = MessageBoxButton.OK;
+                        MessageBoxImage icon = MessageBoxImage.Warning;
+                        MessageBox.Show(text, caption, messageButton, icon);
+                        break;
+                    }
                 }
-                Button button = (Button)sender;
-                button.Content = "Return to Editting";
-                this.Simulating = true;
-                ComponentDataGrid.Columns[0].IsReadOnly = true;
-                ComponentDataGrid.Columns[1].IsReadOnly = true;
-                ComponentDataGrid.Columns[2].IsReadOnly = true;
+                if (componentFailed)
+                {
+                    this.DisableCircuit();
+                }
+                else
+                {
+                    Button button = (Button)sender;
+                    button.Content = "Return to Editting";
+                    this.Simulating = true;
+                    ComponentDataGrid.Columns[0].IsReadOnly = true;
+                    ComponentDataGrid.Columns[1].IsReadOnly = true;
+                    ComponentDataGrid.Columns[2].IsReadOnly = true;
+                }
+
             }
             else
             {
@@ -432,8 +451,10 @@ namespace Real_NEA_Circuit_Simulator
                 string[] typePath = currentComponent.GetType().ToString().Split('.');
                 ComponentsToSave[currentComponent.name].Add("Type", currentComponent.GetType().Name);
                 ComponentsToSave[currentComponent.name].Add("Resistance", currentComponent.Resistance.ToString());
+                ComponentsToSave[currentComponent.name].Add("Rotation", currentComponent.rotation.ToString());
                 ComponentsToSave[currentComponent.name].Add("PositionX", ((int)(Canvas.GetLeft(currentComponent.image) + currentComponent.image.ActualWidth/2)).ToString());
                 ComponentsToSave[currentComponent.name].Add("PositionY", ((int)(Canvas.GetTop(currentComponent.image) + currentComponent.image.ActualHeight/2)).ToString());
+
                 if (currentComponent is Cell)
                 {
                     ComponentsToSave[currentComponent.name].Add("Voltage", ((Cell)currentComponent).Voltage.ToString());
@@ -478,7 +499,7 @@ namespace Real_NEA_Circuit_Simulator
             foreach (string componentNameKey in Components.Keys)
             {
                 Dictionary<string, string> component = Components[componentNameKey];
-                jsonString += "\"" + componentNameKey + "\":{";
+                jsonString += "\n\"" + componentNameKey + "\":{";
                 foreach (string key in component.Keys)
                 {
                     jsonString += "\"" + key + "\":\"" + component[key] + "\",";
@@ -489,19 +510,33 @@ namespace Real_NEA_Circuit_Simulator
             jsonString = jsonString.Substring(0, jsonString.Length - 2);
             jsonString += "}},";
 
-            jsonString += "\"AdjacencyList\":{";
-            foreach (string index in AdjacencyListToSave.Keys) 
+            jsonString += "\n\n\"AdjacencyList\":{\n";
+            if (AdjacencyListToSave.Keys.Count >= 2)
             {
-                jsonString += "\"" + index + "\":[";
-                foreach (List<int> neighbourAndNode in AdjacencyListToSave[index])
+                foreach (string index in AdjacencyListToSave.Keys)
                 {
-                    jsonString += "[" + neighbourAndNode[0] + "," + neighbourAndNode[1] + "],";
+                    jsonString += "\"" + index + "\":[";
+                    int counter = 0;
+                    foreach (List<int> neighbourAndNode in AdjacencyListToSave[index])
+                    {
+                        counter += 1;
+                        jsonString += "[" + neighbourAndNode[0] + "," + neighbourAndNode[1] + "],";
+                    }
+                    if (counter > 0)
+                    {
+                        jsonString = jsonString.Substring(0, jsonString.Length - 2);
+                        jsonString += "]],";
+                    }
+                    else
+                    {
+                        jsonString += "],";
+                    }
                 }
-                jsonString = jsonString.Substring(0,jsonString.Length-2);
-                jsonString += "]],";
+                jsonString = jsonString.Substring(0, jsonString.Length - 2);
+                jsonString += "]";
             }
-            jsonString = jsonString.Substring(0, jsonString.Length - 2);
-            jsonString += "]}}";
+            jsonString += "}}";
+
             return jsonString;
         }
         public void ImportFile(string filename)
@@ -528,6 +563,7 @@ namespace Real_NEA_Circuit_Simulator
                                     newComponent.SetResistance(float.Parse(componentData["Resistance"]));
                                     newComponent.RenderFirst(position);
                                     this.MainCircuit.ComponentsList.Add(newComponent);
+                                    newComponent.Rotate(int.Parse(componentData["Rotation"]));
                                     DataGridHandler.AddNewComponentData(newComponent);
                                 }
                                 else if(componentData["Type"] == "FixedResistor")
@@ -537,6 +573,7 @@ namespace Real_NEA_Circuit_Simulator
                                     newComponent.SetResistance(float.Parse(componentData["Resistance"]));
                                     newComponent.RenderFirst(position);
                                     this.MainCircuit.ComponentsList.Add(newComponent);
+                                    //newComponent.Rotate(int.Parse(componentData["Rotation"]));
                                     DataGridHandler.AddNewComponentData(newComponent);
                                 }
                                 else if (componentData["Type"] == "Cell")
@@ -547,8 +584,10 @@ namespace Real_NEA_Circuit_Simulator
                                     newComponent.SetVoltage(float.Parse(componentData["Voltage"]));
                                     newComponent.RenderFirst(position);
                                     this.MainCircuit.ComponentsList.Add(newComponent);
+                                    newComponent.Rotate(int.Parse(componentData["Rotation"]));
                                     DataGridHandler.AddNewComponentData(newComponent);
                                 }
+
                             }
 
                         }
