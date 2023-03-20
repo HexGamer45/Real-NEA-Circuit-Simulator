@@ -24,7 +24,6 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses
 
         public static ObservableCollection<ComponentDisplayData> LoadCollectionData()
         {
-            Console.WriteLine("Loaded");
             return DisplayData;
         }
 

@@ -208,7 +208,6 @@ namespace Real_NEA_Circuit_Simulator
 
                         }
                         this.SelectedWire.ConnectSecondNode(closestNode);
-                        Console.WriteLine(this.MainCircuit.AdjacencyList[closestNode.ConnectedComponent].Count);
 
                     }
                     else { this.SelectedWire.RemoveLine(); }
@@ -645,8 +644,6 @@ namespace Real_NEA_Circuit_Simulator
                                     {
                                         this.MainCircuit.AdjacencyList.Add(neighbour, new List<Component>());
                                     }
-                                    Console.WriteLine(currentComponent.ConnectedNodes[inpOut].name);
-                                    Console.WriteLine(neighbour.ConnectedNodes[neighbourDat[1]].name);
                                     bool connAlreadyMade = false;
                                     foreach (Wire connWire in this.MainCircuit.WireToNodes.Keys)
                                     {

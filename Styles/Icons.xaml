@@ -5,6 +5,14 @@
 
     <BitmapImage x:Key="FixedResistor" UriSource="/Assets/ComponentIcons/FixedResistor.png"/>
     <BitmapImage x:Key="LED" UriSource="/Assets/ComponentIcons/LED.png"/>
+    <BitmapImage x:Key="Bulb" UriSource="/Assets/ComponentIcons/Bulb.png"/>
+    <BitmapImage x:Key="LitBulb" UriSource="/Assets/ComponentIcons/LitBulb.png"/>
     <BitmapImage x:Key="LitLED" UriSource="/Assets/ComponentIcons/LitLED.png"/>
     <BitmapImage x:Key="Cell" UriSource="/Assets/ComponentIcons/Cell.png"/>
+    <BitmapImage x:Key="Battery" UriSource="/Assets/ComponentIcons/Battery.png"/>
+    <BitmapImage x:Key="Motor" UriSource="/Assets/ComponentIcons/Motor.png"/>
+    <BitmapImage x:Key="ActiveMotor" UriSource="/Assets/ComponentIcons/ActiveMotor.png"/>
+    <BitmapImage x:Key="Buzzer" UriSource="/Assets/ComponentIcons/Buzzer.png"/>
+    <BitmapImage x:Key="Switch" UriSource="/Assets/ComponentIcons/Switch.png"/>
+
 </ResourceDictionary>
