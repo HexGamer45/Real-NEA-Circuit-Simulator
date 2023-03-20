@@ -34,6 +34,6 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
         public override void DisableComponentFunction()
         {
             base.DisableComponentFunction();
--        }
+        }
     }
 }
