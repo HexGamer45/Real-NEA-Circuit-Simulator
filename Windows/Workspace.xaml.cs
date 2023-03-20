@@ -39,6 +39,7 @@ namespace Real_NEA_Circuit_Simulator
         private float MiddleRelativeX;
         private float MiddleRelativeY;
         private bool Simulating;
+        private string? loadedFile;
 
         public Workspace()
         {
@@ -55,6 +56,7 @@ namespace Real_NEA_Circuit_Simulator
             this.MiddleRelativeX = 0;
             this.MiddleRelativeY = 0;
             this.Simulating = false;
+            this.loadedFile = null;
             ComponentDataGrid.ItemsSource = DataGridHandler.LoadCollectionData();
         }
 
@@ -75,14 +77,6 @@ namespace Real_NEA_Circuit_Simulator
             newComponent.RenderFirst(position);
             DataGridHandler.AddNewComponentData(newComponent);
             ComponentDataGrid.Items.Refresh();
-            foreach (ComponentDisplayData dat in ComponentDataGrid.ItemsSource)
-            {
-                Console.WriteLine(dat.Name);
-                Console.WriteLine(dat.Resistance);
-                Console.WriteLine(dat.Voltage);
-                Console.WriteLine(dat.Active);
-                Console.WriteLine("\n");
-            }
         }
         private void GenerateNewLED(object sender, RoutedEventArgs eventArgs)
         {
@@ -214,6 +208,7 @@ namespace Real_NEA_Circuit_Simulator
 
                         }
                         this.SelectedWire.ConnectSecondNode(closestNode);
+                        Console.WriteLine(this.MainCircuit.AdjacencyList[closestNode.ConnectedComponent].Count);
 
                     }
                     else { this.SelectedWire.RemoveLine(); }
@@ -419,7 +414,6 @@ namespace Real_NEA_Circuit_Simulator
             this.MainCircuit.AdjacencyList.Clear();
             DataGridHandler.Clear();
         }
-
         private void Load(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -434,7 +428,22 @@ namespace Real_NEA_Circuit_Simulator
                 this.ImportFile(filepath);
             }
         }
-
+        private void SaveAs(object sender, RoutedEventArgs e)
+        {
+            bool? hasClicked = false;
+            string fileName = "";
+            SaveFileDialog fileDialog = new SaveFileDialog();
+            fileDialog.DefaultExt = "json";
+            fileDialog.Filter = "Json file (*.json)|*.json";
+            fileDialog.FileName = "";
+            hasClicked = fileDialog.ShowDialog();
+            fileName = fileDialog.FileName;
+            if (fileDialog.FileName != "" && hasClicked == true)
+            {
+                this.loadedFile = fileName;
+            }
+            this.Save(sender,e);
+        }
         private void Save(object sender, RoutedEventArgs e)
         {
             Dictionary<string, Dictionary<string, string>> ComponentsToSave = new();
@@ -447,13 +456,13 @@ namespace Real_NEA_Circuit_Simulator
                     MessageBox.Show("Unable to save file, because one or more components have the same name.", "Save error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                ComponentsToSave.Add(currentComponent.name, new Dictionary<string,string>());
+                ComponentsToSave.Add(currentComponent.name, new Dictionary<string, string>());
                 string[] typePath = currentComponent.GetType().ToString().Split('.');
                 ComponentsToSave[currentComponent.name].Add("Type", currentComponent.GetType().Name);
                 ComponentsToSave[currentComponent.name].Add("Resistance", currentComponent.Resistance.ToString());
                 ComponentsToSave[currentComponent.name].Add("Rotation", currentComponent.rotation.ToString());
-                ComponentsToSave[currentComponent.name].Add("PositionX", ((int)(Canvas.GetLeft(currentComponent.image) + currentComponent.image.ActualWidth/2)).ToString());
-                ComponentsToSave[currentComponent.name].Add("PositionY", ((int)(Canvas.GetTop(currentComponent.image) + currentComponent.image.ActualHeight/2)).ToString());
+                ComponentsToSave[currentComponent.name].Add("PositionX", ((int)(Canvas.GetLeft(currentComponent.image) + currentComponent.image.ActualWidth / 2)).ToString());
+                ComponentsToSave[currentComponent.name].Add("PositionY", ((int)(Canvas.GetTop(currentComponent.image) + currentComponent.image.ActualHeight / 2)).ToString());
 
                 if (currentComponent is Cell)
                 {
@@ -468,6 +477,11 @@ namespace Real_NEA_Circuit_Simulator
                     {
                         foreach (Wire wire in node.ConnectedWires)
                         {
+                            bool finished = false;
+                            if (finished)
+                            {
+                                break;
+                            }
                             foreach (Node node2 in wire.ConnectedNodes)
                             {
                                 if (node2 != node)
@@ -476,6 +490,7 @@ namespace Real_NEA_Circuit_Simulator
                                     {
                                         inpOut = node.ConnectedComponent.ConnectedNodes.IndexOf(node);
                                         AdjacencyListToSave[Counter.ToString()].Add(new List<int>() { neighbourIndex, inpOut });
+                                        finished = true;
                                     }
                                 }
                             }
@@ -484,15 +499,28 @@ namespace Real_NEA_Circuit_Simulator
                 }
                 Counter += 1;
             }
+            bool? hasClicked = false;
             string jsonString = ConvertDictsToJsonString(ComponentsToSave, AdjacencyListToSave);
+            string fileName = "";
             SaveFileDialog fileDialog = new SaveFileDialog();
-            fileDialog.DefaultExt = "json";
-            fileDialog.Filter = "Json file (*.json)|*.json";
-            fileDialog.FileName = "untitled";
-            fileDialog.ShowDialog();
-            File.WriteAllText(fileDialog.FileName, jsonString);
+            if (this.loadedFile != null)
+            {
+                fileName = this.loadedFile;
+            }
+            else
+            {
+                fileDialog.DefaultExt = "json";
+                fileDialog.Filter = "Json file (*.json)|*.json";
+                fileDialog.FileName = "";
+                hasClicked = fileDialog.ShowDialog();
+                fileName = fileDialog.FileName;
+            }
+            if (fileName != "" && (this.loadedFile!=null || hasClicked == true))
+            {
+                File.WriteAllText(fileName, jsonString);
+                this.loadedFile = fileName;
+            }
         }
-
         public string ConvertDictsToJsonString(Dictionary<string, Dictionary<string, string>> Components, Dictionary<string, List<List<int>>> AdjacencyListToSave)
         {
             string jsonString = "{\"Components\":{";
@@ -543,6 +571,7 @@ namespace Real_NEA_Circuit_Simulator
         {
             if (filename.EndsWith(".json"))
             {
+                this.loadedFile = filename;
                 Dictionary<string, Dictionary<string, object>>? incoming = new Dictionary<string, Dictionary<string, object>>();
                 using (StreamReader r = new StreamReader(filename))
                 {
@@ -616,12 +645,21 @@ namespace Real_NEA_Circuit_Simulator
                                     {
                                         this.MainCircuit.AdjacencyList.Add(neighbour, new List<Component>());
                                     }
-                                    if (!this.MainCircuit.AdjacencyList[currentComponent].Contains(neighbour))
+                                    Console.WriteLine(currentComponent.ConnectedNodes[inpOut].name);
+                                    Console.WriteLine(neighbour.ConnectedNodes[neighbourDat[1]].name);
+                                    bool connAlreadyMade = false;
+                                    foreach (Wire connWire in this.MainCircuit.WireToNodes.Keys)
+                                    {
+                                        if (this.MainCircuit.WireToNodes[connWire].Contains(currentComponent.ConnectedNodes[inpOut]) && this.MainCircuit.WireToNodes[connWire].Contains(neighbour.ConnectedNodes[neighbourDat[1]]))
+                                        {
+                                            connAlreadyMade = true;
+                                        }
+                                    }
+                                    if (!connAlreadyMade)
                                     {
                                         Wire newWire = new Wire(currentComponent.name + inpOut + "-" + neighbour.name + neighbourDat[1], new List<Node>() { currentComponent.ConnectedNodes[inpOut] }, MainCircuit);
                                         newWire.RenderWithOneNode();
                                         newWire.ConnectSecondNode(neighbour.ConnectedNodes[neighbourDat[1]]);
-                                        Console.WriteLine(currentComponent.name + "<-->" + neighbour.name);
                                     }
                                 }
                             }
@@ -630,7 +668,6 @@ namespace Real_NEA_Circuit_Simulator
                 }
             }
         }
-
         private void ComponentDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 

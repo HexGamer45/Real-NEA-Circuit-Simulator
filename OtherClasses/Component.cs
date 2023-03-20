@@ -140,7 +140,7 @@ namespace Real_NEA_Circuit_Simulator
             {
                 this.rotation -= 360;
             }
-            RotateTransform rotation = new RotateTransform(degrees) {CenterX=Canvas.GetLeft(this.image)+this.image.ActualWidth / 2,CenterY= Canvas.GetTop(this.image) + this.image.ActualHeight /2 };
+            RotateTransform rotation = new RotateTransform(degrees) {CenterX=0.5,CenterY=0.5 };
             if (this.image.Source is TransformedBitmap)
             {
                 TransformedBitmap transformBmp = new TransformedBitmap();

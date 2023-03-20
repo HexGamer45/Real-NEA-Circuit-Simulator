@@ -74,12 +74,8 @@ namespace Real_NEA_Circuit_Simulator
             this.ConnectedNodes[0].ConnectedWires.Remove(this);
             this.MainCircuit.MainCanvas.Children.Remove(this.line);
             this.line = null;
-            if (this.MainCircuit.AdjacencyList.ContainsKey(this.ConnectedNodes[0].ConnectedComponent) && this.ConnectedNodes.Count >=2)
-            {
-                this.MainCircuit.AdjacencyList[this.ConnectedNodes[0].ConnectedComponent].Remove(this.ConnectedNodes[1].ConnectedComponent);
-                this.MainCircuit.WireToNodes.Remove(this);
-                this.ConnectedNodes.Clear();
-            }
+            this.MainCircuit.WireToNodes.Remove(this);
+            this.ConnectedNodes.Clear();
             
         }
 
@@ -92,6 +88,7 @@ namespace Real_NEA_Circuit_Simulator
             this.MainCircuit.MainCanvas.Children.Remove(this.line);
             this.line = null;
             this.MainCircuit.AdjacencyList[this.ConnectedNodes[0].ConnectedComponent].Remove(this.ConnectedNodes[1].ConnectedComponent);
+            this.MainCircuit.AdjacencyList[this.ConnectedNodes[1].ConnectedComponent].Remove(this.ConnectedNodes[0].ConnectedComponent);
             this.MainCircuit.WireToNodes.Remove(this);
             this.ConnectedNodes.Clear();
         }
@@ -111,14 +108,19 @@ namespace Real_NEA_Circuit_Simulator
             {
                 this.MainCircuit.AdjacencyList.Add(this.ConnectedNodes[0].ConnectedComponent, new List<Component>());
             }
-            this.MainCircuit.AdjacencyList[this.ConnectedNodes[0].ConnectedComponent].Add(node2.ConnectedComponent);
+            if (!this.MainCircuit.AdjacencyList[this.ConnectedNodes[0].ConnectedComponent].Contains(node2.ConnectedComponent))
+            {
+                this.MainCircuit.AdjacencyList[this.ConnectedNodes[0].ConnectedComponent].Add(node2.ConnectedComponent);
+            }
 
             if (!this.MainCircuit.AdjacencyList.ContainsKey(node2.ConnectedComponent))
             {
                 this.MainCircuit.AdjacencyList.Add(node2.ConnectedComponent, new List<Component>());
             }
-            this.MainCircuit.AdjacencyList[node2.ConnectedComponent].Add(this.ConnectedNodes[0].ConnectedComponent);
-
+            if (!this.MainCircuit.AdjacencyList[node2.ConnectedComponent].Contains(this.ConnectedNodes[0].ConnectedComponent))
+            {
+                this.MainCircuit.AdjacencyList[node2.ConnectedComponent].Add(this.ConnectedNodes[0].ConnectedComponent);
+            }
             this.MainCircuit.WireToNodes[this].Add(ConnectedNodes[1]);
             this.name = this.name.Substring(0, this.name.Length - 4) + node2.name;
 
