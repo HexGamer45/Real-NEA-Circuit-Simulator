@@ -10,6 +10,7 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses
 {
     public class ComponentDisplayData
     {
+        public Component Component;
         public string name;
         public float resistance;
         public float voltage;
@@ -67,6 +68,7 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses
 
         public ComponentDisplayData(Component component)
         {
+            this.Component = component;
             name = component.name;
             resistance = component.Resistance;
             if (component is Cell)

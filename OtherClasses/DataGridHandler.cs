@@ -22,6 +22,18 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses
 
         }
 
+        public static void RemoveComponentData(Component component)
+        {
+            foreach (ComponentDisplayData data in DisplayData)
+            {
+                if (data.Component == component)
+                {
+                    DisplayData.Remove(data);
+                    break;
+                }
+            }
+        }
+
         public static ObservableCollection<ComponentDisplayData> LoadCollectionData()
         {
             return DisplayData;

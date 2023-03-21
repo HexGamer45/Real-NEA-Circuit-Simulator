@@ -164,5 +164,29 @@ namespace Real_NEA_Circuit_Simulator
             this.ConnectedNodes[1].Move(position, 1);
         }
 
+        public void Delete()
+        {
+            foreach (Node node in this.ConnectedNodes)
+            {
+                List<Wire> wiresToDelete = new List<Wire>();
+                foreach (Wire wire in node.ConnectedWires)
+                {
+                    wiresToDelete.Add(wire);
+                }
+                foreach (Wire wire in wiresToDelete)
+                {
+                    wire.DeleteThisConnection();
+                }
+                this.MainCircuit.MainCanvas.Children.Remove(node.image);
+            }
+            if (this.MainCircuit.AdjacencyList.ContainsKey(this))
+            {
+                this.MainCircuit.AdjacencyList.Remove(this);
+            }
+            this.ConnectedNodes.Clear();
+            this.MainCircuit.MainCanvas.Children.Remove(this.image);
+            
+        }
+
     }
 }

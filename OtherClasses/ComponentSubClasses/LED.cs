@@ -14,7 +14,6 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
 {
     public class LED : Component
     {
-        public float wavelength { get; private set; }
         private float activationVoltage;
         public LED(string name, Circuit circuit) :base(name, circuit)
         {

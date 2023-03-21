@@ -14,7 +14,6 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
 {
     public class Bulb : Component
     {
-        public float wavelength { get; private set; }
         public Bulb(string name, Circuit circuit) :base(name, circuit)
         {
             this.Resistance = 20f;

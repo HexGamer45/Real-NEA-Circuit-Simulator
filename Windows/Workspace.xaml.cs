@@ -78,6 +78,78 @@ namespace Real_NEA_Circuit_Simulator
             DataGridHandler.AddNewComponentData(newComponent);
             ComponentDataGrid.Items.Refresh();
         }
+        private void GenerateNewBattery(object sender, RoutedEventArgs eventArgs)
+        {
+            if (this.Simulating) { return; }
+            int count = 0;
+            foreach (Component component in this.MainCircuit.ComponentsList)
+            {
+                if (component is Battery)
+                {
+                    count++;
+                }
+            }
+            Battery newComponent = new Battery("Battery" + count.ToString(), this.MainCircuit);
+            this.MainCircuit.ComponentsList.Add(newComponent);
+            Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
+            newComponent.RenderFirst(position);
+            DataGridHandler.AddNewComponentData(newComponent);
+            ComponentDataGrid.Items.Refresh();
+        }
+        private void GenerateNewBulb(object sender, RoutedEventArgs eventArgs)
+        {
+            if (this.Simulating) { return; }
+            int count = 0;
+            foreach (Component component in this.MainCircuit.ComponentsList)
+            {
+                if (component is Bulb)
+                {
+                    count++;
+                }
+            }
+            Bulb newComponent = new Bulb("Bulb" + count.ToString(), this.MainCircuit);
+            this.MainCircuit.ComponentsList.Add(newComponent);
+            Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
+            newComponent.RenderFirst(position);
+            DataGridHandler.AddNewComponentData(newComponent);
+            ComponentDataGrid.Items.Refresh();
+        }
+        private void GenerateNewBuzzer(object sender, RoutedEventArgs eventArgs)
+        {
+            if (this.Simulating) { return; }
+            int count = 0;
+            foreach (Component component in this.MainCircuit.ComponentsList)
+            {
+                if (component is Buzzer)
+                {
+                    count++;
+                }
+            }
+            Buzzer newComponent = new Buzzer("Buzzer" + count.ToString(), this.MainCircuit);
+            this.MainCircuit.ComponentsList.Add(newComponent);
+            Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
+            newComponent.RenderFirst(position);
+            DataGridHandler.AddNewComponentData(newComponent);
+            ComponentDataGrid.Items.Refresh();
+        }
+        private void GenerateNewMotor(object sender, RoutedEventArgs eventArgs)
+        {
+            if (this.Simulating) { return; }
+            int count = 0;
+            foreach (Component component in this.MainCircuit.ComponentsList)
+            {
+                if (component is Motor)
+                {
+                    count++;
+                }
+            }
+            Motor newComponent = new Motor("Motor" + count.ToString(), this.MainCircuit);
+            this.MainCircuit.ComponentsList.Add(newComponent);
+            Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
+            newComponent.RenderFirst(position);
+            DataGridHandler.AddNewComponentData(newComponent);
+            ComponentDataGrid.Items.Refresh();
+        }
         private void GenerateNewLED(object sender, RoutedEventArgs eventArgs)
         {
             if (this.Simulating) { return; }
@@ -97,7 +169,6 @@ namespace Real_NEA_Circuit_Simulator
             ObservableCollection<ComponentDisplayData> data = DataGridHandler.LoadCollectionData();
             ComponentDataGrid.Items.Refresh();
         }
-
         private void GenerateNewFixedResistor(object sender, RoutedEventArgs eventArgs)
         {
             if (this.Simulating) { return; }
@@ -116,7 +187,6 @@ namespace Real_NEA_Circuit_Simulator
             DataGridHandler.AddNewComponentData(newComponent);
             ComponentDataGrid.Items.Refresh();
         }
-
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -135,6 +205,24 @@ namespace Real_NEA_Circuit_Simulator
                     ((Grid)MainGrid.FindName("CurrentlySelectedGrid")).Background = (Brush)Application.Current.FindResource("ComponentUnselected");
                 }
                 this.LeftSelectedComponent = closestImage;
+            }
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                Image? closestComponentImage = this.GetClosestComponent();
+                if (closestComponentImage != null)
+                {
+                    Component closestComponent = (Component)closestComponentImage.Tag;
+                    if (closestComponent is Switch)
+                    {
+                        Switch switchComponent = (Switch) closestComponent;
+                        switchComponent.FlipSwitch();
+                        if (this.Simulating)
+                        {
+                            this.SimulateCircuit(sender,e);
+                            this.SimulateCircuit(sender,e);
+                        }
+                    }
+                }
             }
             if (this.Simulating) 
             { 
@@ -178,7 +266,6 @@ namespace Real_NEA_Circuit_Simulator
                 }
             }
         }
-
         private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (this.Simulating) { return; }
@@ -215,7 +302,6 @@ namespace Real_NEA_Circuit_Simulator
                 }
             }
         }
-
         private Image? GetClosestComponent()
         {
             float mouseX = (float)Mouse.GetPosition(MainCanvas).X;
@@ -244,7 +330,6 @@ namespace Real_NEA_Circuit_Simulator
             }
             return closestImage;
         }
-
         private Image? GetClosestNode()
         {
             float mouseX = (float)Mouse.GetPosition(MainCanvas).X;
@@ -273,7 +358,6 @@ namespace Real_NEA_Circuit_Simulator
             }
             return closestImage;
         }
-
         private void Grid_MouseMove(object sender, MouseEventArgs e)
         {
             if (this.Simulating) { return; }
@@ -315,8 +399,16 @@ namespace Real_NEA_Circuit_Simulator
                     componentObject.Rotate();
                 }
             }
+            if (e.Key == Key.Delete && this.LeftSelectedComponent != null && this.Simulating == false)
+            {
+                Component componentToDelete = (Component)this.LeftSelectedComponent.Tag;
+                componentToDelete.Delete();
+                DataGridHandler.RemoveComponentData(componentToDelete);
+                this.LeftSelectedComponent=null;
+                ((TextBlock)MainGrid.FindName("CurrentlySelectedName")).Text = "N/A";
+                ((Grid)MainGrid.FindName("CurrentlySelectedGrid")).Background = (Brush)Application.Current.FindResource("ComponentUnselected");
+            }
         }
-
         private void MainCanvas_MouseEnter(object sender, MouseEventArgs e)
         {
             if (!this.MouseInCanvas)
@@ -324,7 +416,6 @@ namespace Real_NEA_Circuit_Simulator
                 this.MouseInCanvas = true;
             }
         }
-
         private void MainCanvas_MouseLeave(object sender, MouseEventArgs e)
         {
             if (this.MouseInCanvas)
@@ -332,7 +423,6 @@ namespace Real_NEA_Circuit_Simulator
                 this.MouseInCanvas = false;
             }
         }
-
         private void SimulateCircuit(object sender, RoutedEventArgs e)
         {
             if (this.Simulating == false)
@@ -359,17 +449,17 @@ namespace Real_NEA_Circuit_Simulator
                     if (component.Active == false)
                     {
                         componentFailed = true;
-                        string text = "One or more component(s) failed, this could be due to a lack of voltage from cells.";
-                        string caption = "Circuit Broken";
-                        MessageBoxButton messageButton = MessageBoxButton.OK;
-                        MessageBoxImage icon = MessageBoxImage.Warning;
-                        MessageBox.Show(text, caption, messageButton, icon);
                         break;
                     }
                 }
                 if (componentFailed)
                 {
                     this.DisableCircuit();
+                    string text = "One or more component(s) failed, this could be due to a lack of voltage from cells or a switch being open.";
+                    string caption = "Circuit Broken";
+                    MessageBoxButton messageButton = MessageBoxButton.OK;
+                    MessageBoxImage icon = MessageBoxImage.Warning;
+                    MessageBox.Show(text, caption, messageButton, icon);
                 }
                 else
                 {
@@ -664,10 +754,6 @@ namespace Real_NEA_Circuit_Simulator
                     }
                 }
             }
-        }
-        private void ComponentDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
         }
     }
 }

@@ -14,7 +14,6 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
 {
     public class Motor : Component
     {
-        public float wavelength { get; private set; }
         private float activationPower;
         public Motor(string name, Circuit circuit) :base(name, circuit)
         {
@@ -31,14 +30,14 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
                     RotateTransform rotation = new RotateTransform(this.rotation);
                     TransformedBitmap transformedBmp = new TransformedBitmap();
                     transformedBmp.BeginInit();
-                    transformedBmp.Source = (BitmapImage)Application.Current.FindResource("ActivatedMotor");
+                    transformedBmp.Source = (BitmapImage)Application.Current.FindResource("ActiveMotor");
                     transformedBmp.Transform= rotation;
                     transformedBmp.EndInit();
                     this.image.Source = transformedBmp;
                     base.PerformComponentFunction(totalVoltage, totalResistance);
                     return;
                 }
-                this.image.Source = (BitmapImage)Application.Current.FindResource("ActivatedMotor");
+                this.image.Source = (BitmapImage)Application.Current.FindResource("ActivateMotor");
                 base.PerformComponentFunction(totalVoltage, totalResistance);
             }
             return;

@@ -1,4 +1,5 @@
-﻿﻿using System;
+﻿using Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -61,6 +62,10 @@ namespace Real_NEA_Circuit_Simulator
 
         private bool IsCyclic(Dictionary<Component, List<Component>> graph, Component start, Component component, HashSet<Component> visited, Component? prev)
         {
+            if (component is Switch && ((Switch)component).switchClosed)
+            {
+                return false;
+            }
             visited.Add(component);
             bool isCyclic = false;
             foreach (Component neighbour in graph[component])

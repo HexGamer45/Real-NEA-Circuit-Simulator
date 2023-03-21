@@ -10,10 +10,17 @@
 
   <ItemGroup>
     <None Remove="Assets\blueNode.png" />
+    <None Remove="Assets\ComponentIcons\ActiveMotor.png" />
+    <None Remove="Assets\ComponentIcons\Battery.png" />
+    <None Remove="Assets\ComponentIcons\Bulb.png" />
+    <None Remove="Assets\ComponentIcons\Buzzer.png" />
     <None Remove="Assets\ComponentIcons\Cell.png" />
     <None Remove="Assets\ComponentIcons\FixedResistor.png" />
     <None Remove="Assets\ComponentIcons\LED.png" />
+    <None Remove="Assets\ComponentIcons\LitBulb.png" />
     <None Remove="Assets\ComponentIcons\LitLED.png" />
+    <None Remove="Assets\ComponentIcons\Motor.png" />
+    <None Remove="Assets\ComponentIcons\Switch.png" />
     <None Remove="Assets\redNode.png" />
   </ItemGroup>
 
@@ -23,14 +30,37 @@
 
   <ItemGroup>
     <Resource Include="Assets\blueNode.png" />
-    <Resource Include="Assets\ComponentIcons\Cell.png" />
+    <Resource Include="Assets\ComponentIcons\ActiveMotor.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\ComponentIcons\Battery.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\ComponentIcons\Bulb.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\ComponentIcons\Buzzer.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\ComponentIcons\Cell.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\ComponentIcons\FixedResistor.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\ComponentIcons\LitBulb.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\ComponentIcons\LitLED.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\ComponentIcons\LED.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\ComponentIcons\Motor.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\ComponentIcons\Switch.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\redNode.png" />
