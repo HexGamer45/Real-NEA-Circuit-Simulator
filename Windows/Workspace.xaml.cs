@@ -150,6 +150,24 @@ namespace Real_NEA_Circuit_Simulator
             DataGridHandler.AddNewComponentData(newComponent);
             ComponentDataGrid.Items.Refresh();
         }
+        private void GenerateNewSwitch(object sender, RoutedEventArgs eventArgs)
+        {
+            if (this.Simulating) { return; }
+            int count = 0;
+            foreach (Component component in this.MainCircuit.ComponentsList)
+            {
+                if (component is Switch)
+                {
+                    count++;
+                }
+            }
+            Switch newComponent = new Switch("Switch" + count.ToString(), this.MainCircuit);
+            this.MainCircuit.ComponentsList.Add(newComponent);
+            Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
+            newComponent.RenderFirst(position);
+            DataGridHandler.AddNewComponentData(newComponent);
+            ComponentDataGrid.Items.Refresh();
+        }
         private void GenerateNewLED(object sender, RoutedEventArgs eventArgs)
         {
             if (this.Simulating) { return; }
@@ -218,26 +236,13 @@ namespace Real_NEA_Circuit_Simulator
                         switchComponent.FlipSwitch();
                         if (this.Simulating)
                         {
-                            this.SimulateCircuit(sender,e);
-                            this.SimulateCircuit(sender,e);
+                            this.SimulateCircuit(MainGrid.FindName("SimulateButton"),e);
+                            this.SimulateCircuit(MainGrid.FindName("SimulateButton"), e);
                         }
                     }
                 }
             }
-            if (this.Simulating) 
-            { 
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-                    this.SelectedComponent = this.GetClosestComponent();
-                    Image? closestImage = this.SelectedComponent;
-                    if (closestImage != null)
-                    {
-                        Component SelectedComponentObject = (Component) closestImage.Tag;
-                        /*use component data to make table under right buttons*/
-                    }
-                }
-                return; 
-            }
+
             if (e.MiddleButton == MouseButtonState.Pressed)
             {
                 this.MiddleDown = true;
@@ -446,7 +451,7 @@ namespace Real_NEA_Circuit_Simulator
                 foreach (Component component in UsableCircuit.Keys)
                 {
                     component.PerformComponentFunction(totalVoltage, totalResistance);
-                    if (component.Active == false)
+                    if (component.Active == false || (component is Switch && ((Switch)component).switchClosed!=true))
                     {
                         componentFailed = true;
                         break;
@@ -463,24 +468,30 @@ namespace Real_NEA_Circuit_Simulator
                 }
                 else
                 {
-                    Button button = (Button)sender;
-                    button.Content = "Return to Editting";
-                    this.Simulating = true;
-                    ComponentDataGrid.Columns[0].IsReadOnly = true;
-                    ComponentDataGrid.Columns[1].IsReadOnly = true;
-                    ComponentDataGrid.Columns[2].IsReadOnly = true;
+                    if (sender is Button)
+                    {
+                        Button button = (Button)sender;
+                        button.Content = "Return to Editting";
+                        this.Simulating = true;
+                        ComponentDataGrid.Columns[0].IsReadOnly = true;
+                        ComponentDataGrid.Columns[1].IsReadOnly = true;
+                        ComponentDataGrid.Columns[2].IsReadOnly = true;
+                    }
                 }
 
             }
             else
             {
-                Button button = (Button)sender;
-                button.Content = "Simulate";
-                this.Simulating = false;
-                this.DisableCircuit();
-                ComponentDataGrid.Columns[0].IsReadOnly = false;
-                ComponentDataGrid.Columns[1].IsReadOnly = false;
-                ComponentDataGrid.Columns[2].IsReadOnly = false;
+                if (sender is Button)
+                {
+                    Button button = (Button)sender;
+                    button.Content = "Simulate";
+                    this.Simulating = false;
+                    this.DisableCircuit();
+                    ComponentDataGrid.Columns[0].IsReadOnly = false;
+                    ComponentDataGrid.Columns[1].IsReadOnly = false;
+                    ComponentDataGrid.Columns[2].IsReadOnly = false;
+                }
             }
             foreach (ComponentDisplayData data in ComponentDataGrid.Items)
             {

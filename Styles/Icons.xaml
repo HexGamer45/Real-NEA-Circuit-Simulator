@@ -14,5 +14,6 @@
     <BitmapImage x:Key="ActiveMotor" UriSource="/Assets/ComponentIcons/ActiveMotor.png"/>
     <BitmapImage x:Key="Buzzer" UriSource="/Assets/ComponentIcons/Buzzer.png"/>
     <BitmapImage x:Key="Switch" UriSource="/Assets/ComponentIcons/Switch.png"/>
+    <BitmapImage x:Key="OpenSwitch" UriSource="/Assets/ComponentIcons/OpenSwitch.png"/>
 
 </ResourceDictionary>

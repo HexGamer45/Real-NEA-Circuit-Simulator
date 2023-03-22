@@ -20,6 +20,7 @@
     <None Remove="Assets\ComponentIcons\LitBulb.png" />
     <None Remove="Assets\ComponentIcons\LitLED.png" />
     <None Remove="Assets\ComponentIcons\Motor.png" />
+    <None Remove="Assets\ComponentIcons\OpenSwitch.png" />
     <None Remove="Assets\ComponentIcons\Switch.png" />
     <None Remove="Assets\redNode.png" />
   </ItemGroup>
@@ -60,6 +61,7 @@
     <Resource Include="Assets\ComponentIcons\Motor.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\ComponentIcons\OpenSwitch.png" />
     <Resource Include="Assets\ComponentIcons\Switch.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
