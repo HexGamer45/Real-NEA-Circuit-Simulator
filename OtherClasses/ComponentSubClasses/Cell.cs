@@ -8,7 +8,9 @@
             this.Resistance = 0f;
             this.Voltage = 3f;
         }
-
+        /*The SetVoltage Method is overriden to change the Voltage property to the inputted
+          table value, or the one stored in JSON.
+        */
         public override void SetVoltage(float voltage)
         {
             this.Voltage = voltage;

@@ -13,6 +13,7 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
             this.Resistance = 0f;
         }
 
+        //This just inverts the boolean property switchClosed
         public void FlipSwitch()
         {
             this.switchClosed = !this.switchClosed;

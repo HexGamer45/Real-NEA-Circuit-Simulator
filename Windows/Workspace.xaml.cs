@@ -51,7 +51,11 @@ namespace Real_NEA_Circuit_Simulator
             this.loadedFile = null;
             ComponentDataGrid.ItemsSource = DataGridHandler.LoadCollectionData();
         }
-
+        #region Generating Components
+        /*These methods are used to create a new instance of the Component class; each one is
+          specific to a subclass of Component, i.e., GenerateNewLED produces new LED object.
+          I have done it like this, as I haven't found a way to dynamically type the component.
+        */
         private void GenerateNewCell(object sender, RoutedEventArgs eventArgs)
         {
             if (this.Simulating) { return; }
@@ -197,6 +201,13 @@ namespace Real_NEA_Circuit_Simulator
             DataGridHandler.AddNewComponentData(newComponent);
             ComponentDataGrid.Items.Refresh();
         }
+        #endregion
+
+        #region Handling Components
+        /*The GetClosestComponent and Node methods find the closest corresponding part  to the
+          mouse on screen, then if the mouse is within the bounds of it's icon then that image
+          is returned, else it returns null
+         */
         private Image? GetClosestComponent()
         {
             float mouseX = (float)Mouse.GetPosition(MainCanvas).X;
@@ -420,6 +431,9 @@ namespace Real_NEA_Circuit_Simulator
                 this.MouseInCanvas = false;
             }
         }
+        #endregion
+
+        #region Right Side Buttons
         private void SimulateCircuit(object sender, RoutedEventArgs e)
         {
             if (this.Simulating == false)
@@ -819,5 +833,6 @@ namespace Real_NEA_Circuit_Simulator
                 }
             }
         }
+        #endregion
     }
 }

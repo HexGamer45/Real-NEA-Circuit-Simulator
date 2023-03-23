@@ -26,6 +26,10 @@ namespace Real_NEA_Circuit_Simulator
             this.ConnectedNodes.Add(node);
             node.ConnectedWires.Add(this);
         }
+        /*While only the first node is selected the wire is still expected to be shown between
+          the first node and the mouse cursor, so it has to be rendered with one node, and
+          the line needs to continue to move with the mouse once generated (MoveOneNodeLine)
+         */
         public void RenderWithOneNode()
         {
             this.ConnectedNodes[0].AddWire(this);
@@ -72,6 +76,7 @@ namespace Real_NEA_Circuit_Simulator
             this.MainCircuit.WireToNodes.Remove(this);
             this.ConnectedNodes.Clear();
         }
+        //Once a second node is selected it has to be connected to the wire:
         public void ConnectSecondNode(Node node2)
         {
             if (this.line == null) { return; }

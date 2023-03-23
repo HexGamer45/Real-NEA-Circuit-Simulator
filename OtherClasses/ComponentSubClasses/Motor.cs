@@ -9,6 +9,9 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
         private float activationPower;
         public Motor(string name, Circuit circuit) :base(name, circuit)
         {
+            /*Activation power is required as it's a motor, so it only activates when the total
+              available power to the Motor is higher than this number (starting power for movement)
+             */
             this.activationPower = 0.02f;
             this.Resistance = 0.5f;
         }

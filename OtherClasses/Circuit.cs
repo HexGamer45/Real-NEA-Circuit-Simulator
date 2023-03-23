@@ -19,6 +19,10 @@ namespace Real_NEA_Circuit_Simulator
 
         }
 
+        /*RemoveNonCircuitComponents uses the recursive function IsCyclic to determine if each
+          component in the circuit's adjacency list is in a closed loop and returns an adjacency
+          list with only ones that are.
+         */
         private bool IsCyclic(Dictionary<Component, List<Component>> graph, Component start, Component component, HashSet<Component> visited, Component? prev)
         {
             visited.Add(component);

@@ -4,6 +4,7 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses
 {
     internal static class DataGridHandler
     {
+        //The observable collection makes it so that other references to this get updated on changes
         public static ObservableCollection<ComponentDisplayData> DisplayData = new ObservableCollection<ComponentDisplayData>();
         public static void AddNewComponentData(Component component)
         {
@@ -22,6 +23,9 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses
                 }
             }
         }
+        /*LoadCollectionData can be called anywhere in the program to return a reference to
+          DisplayData
+         */
         public static ObservableCollection<ComponentDisplayData> LoadCollectionData()
         {
             return DisplayData;

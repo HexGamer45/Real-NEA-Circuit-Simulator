@@ -6,6 +6,9 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
 {
     public class LED : Component
     {
+        /*Activation voltage is required as it's a diode, so it only activates when the total
+          available voltage to the LED is higher than this number
+         */
         private float activationVoltage;
         public LED(string name, Circuit circuit) :base(name, circuit)
         {

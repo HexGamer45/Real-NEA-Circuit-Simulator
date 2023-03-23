@@ -21,6 +21,8 @@ namespace Real_NEA_Circuit_Simulator
         {
             this.ConnectedWires.Add(wire); 
         }
+        /*RenderFirst just renders the node to a given position (Will be either side of the
+          component*/
         public void RenderFirst(Point position)
         {
             Image image = new Image();
@@ -45,6 +47,10 @@ namespace Real_NEA_Circuit_Simulator
             Canvas.SetTop(image, position.Y);
             this.image = image;
         }
+        /*Move takes in a position and whether the node is the input or output node
+          it uses this information to move it with the component, and track where it should be
+          in a given rotation of the component.
+        */
         public void Move(Point position, int inpOut)
         {
             if (this.image != null)

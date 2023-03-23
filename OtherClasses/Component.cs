@@ -28,6 +28,7 @@ namespace Real_NEA_Circuit_Simulator
             this.MainCircuit.AdjacencyList.Add(this, new List<Component>());
         }
 
+        #region General
         public void RenderFirst(Point position)
         {
             Image image = new Image();
@@ -69,40 +70,6 @@ namespace Real_NEA_Circuit_Simulator
                 this.ConnectedNodes[1].Move(position, 1);
             }
         }
-        protected float getVoltageAvailable(float totalVoltage, float totalResistance)
-        {
-            float accessedVolts = totalVoltage * this.Resistance / totalResistance;
-            return accessedVolts;
-        }
-        protected float getPowerAvailable(float totalVoltage, float totalResistance)
-        {
-            float power = (float)Math.Pow(this.getVoltageAvailable(totalVoltage,totalResistance), 2) / this.Resistance;
-            return power;
-        }
-        public virtual void PerformComponentFunction(float totalVoltage, float totalResistance)
-        {
-            this.Active = true;
-        }
-        public virtual void DisableComponentFunction()
-        {
-            this.Active = false;
-        }
-        public void SetName(string name)
-        {
-            this.name = name;
-        }
-        public void SetResistance(float resistance)
-        {
-            this.Resistance = resistance;
-        }
-        public virtual void SetVoltage(float voltage)
-        {
-            return;
-        }
-        public void SetActive(bool active)
-        {
-            this.Active = active;
-        }
         public void Rotate(int degrees = 90)
         {
             this.rotation += degrees;
@@ -110,7 +77,7 @@ namespace Real_NEA_Circuit_Simulator
             {
                 this.rotation -= 360;
             }
-            RotateTransform rotation = new RotateTransform(degrees) {CenterX=0.5,CenterY=0.5 };
+            RotateTransform rotation = new RotateTransform(degrees) { CenterX = 0.5, CenterY = 0.5 };
             if (this.image.Source is TransformedBitmap)
             {
                 TransformedBitmap transformBmp = new TransformedBitmap();
@@ -154,7 +121,50 @@ namespace Real_NEA_Circuit_Simulator
             }
             this.ConnectedNodes.Clear();
             this.MainCircuit.MainCanvas.Children.Remove(this.image);
-            
+
         }
+        public void SetName(string name)
+        {
+            this.name = name;
+        }
+        public void SetResistance(float resistance)
+        {
+            this.Resistance = resistance;
+        }
+        /*SetVoltage can be overidden by subclasses (polymorphism); Cells need to return their
+          Given voltage. 
+         */
+        public virtual void SetVoltage(float voltage)
+        {
+            return;
+        }
+        public void SetActive(bool active)
+        {
+            this.Active = active;
+        }
+        #endregion
+
+        #region Simulation
+        //These two dynamically return the available voltage and power for the component.
+        protected float getVoltageAvailable(float totalVoltage, float totalResistance)
+        {
+            float accessedVolts = totalVoltage * this.Resistance / totalResistance;
+            return accessedVolts;
+        }
+        protected float getPowerAvailable(float totalVoltage, float totalResistance)
+        {
+            float power = (float)Math.Pow(this.getVoltageAvailable(totalVoltage,totalResistance), 2) / this.Resistance;
+            return power;
+        }
+        //These are base methods, then they are added to later if a subclass of component needs to.
+        public virtual void PerformComponentFunction(float totalVoltage, float totalResistance)
+        {
+            this.Active = true;
+        }
+        public virtual void DisableComponentFunction()
+        {
+            this.Active = false;
+        }
+        #endregion
     }
 }
