@@ -1,16 +1,8 @@
-﻿﻿using Real_NEA_Circuit_Simulator.OtherClasses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows;
 using Point = System.Drawing.Point;
-using System.Windows.Media;
-using System.Xml.Linq;
-
 namespace Real_NEA_Circuit_Simulator
 {
     public class Node
@@ -18,10 +10,8 @@ namespace Real_NEA_Circuit_Simulator
         public Image? image { get; private set;}
         public Component ConnectedComponent {get; private set;}
         public List<Wire> ConnectedWires { get; private set;}
-        public string name { get; private set; }
-        public Node(string name,Component component)
+        public Node(Component component)
         {
-            this.name = name;
             this.ConnectedComponent = component;
             this.ConnectedWires = new List<Wire>();
             this.image = null;
@@ -31,15 +21,6 @@ namespace Real_NEA_Circuit_Simulator
         {
             this.ConnectedWires.Add(wire); 
         }
-
-        public void AddWires(List<Wire> wires) 
-        {
-            foreach (Wire wire in wires) 
-            {
-                this.AddWire(wire);
-            }
-        }
-
         public void RenderFirst(Point position)
         {
             Image image = new Image();
@@ -64,7 +45,6 @@ namespace Real_NEA_Circuit_Simulator
             Canvas.SetTop(image, position.Y);
             this.image = image;
         }
-
         public void Move(Point position, int inpOut)
         {
             if (this.image != null)

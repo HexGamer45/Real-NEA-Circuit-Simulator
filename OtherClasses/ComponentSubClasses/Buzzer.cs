@@ -1,23 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Media;
-using System.Runtime.CompilerServices;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Media;
 using Path = System.IO.Path;
 
 namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
 {
     public class Buzzer : Component
     {
-        public SoundPlayer player;
+        private SoundPlayer player;
         private float activationPower;
         public Buzzer(string name, Circuit circuit) :base(name, circuit)
         {
@@ -38,7 +26,6 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
             }
             return;
         }
-
         public override void DisableComponentFunction()
         {
             this.player.Stop();

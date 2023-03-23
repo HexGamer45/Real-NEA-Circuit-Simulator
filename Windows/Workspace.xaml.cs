@@ -1,24 +1,16 @@
 ﻿﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Drawing;
-using System.Windows.Shapes;
 using Point = System.Drawing.Point;
 using System.Windows.Input;
 using System.Collections.Generic;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.IO;
-using System.Linq;
 using Microsoft.Win32;
-using System.Text.Json.Serialization;
 using System.Text.Json;
 using Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses;
-using Newtonsoft.Json;
-using System.Windows.Navigation;
 using Real_NEA_Circuit_Simulator.OtherClasses;
 using System.Collections.ObjectModel;
-using Color = System.Drawing.Color;
 
 namespace Real_NEA_Circuit_Simulator
 {
@@ -44,7 +36,7 @@ namespace Real_NEA_Circuit_Simulator
         public Workspace()
         {
             InitializeComponent();
-            this.MainCircuit = new Circuit("Main", MainCanvas);
+            this.MainCircuit = new Circuit(MainCanvas);
             this.SelectedWire = null;
             this.LeftSelectedComponent= null;
             this.SelectedComponent = null;
@@ -205,108 +197,6 @@ namespace Real_NEA_Circuit_Simulator
             DataGridHandler.AddNewComponentData(newComponent);
             ComponentDataGrid.Items.Refresh();
         }
-        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-
-                Image? closestImage = this.GetClosestComponent();
-                if (closestImage != null)
-                {
-                    Component closestComponent = (Component)closestImage.Tag;
-                    ((TextBlock)MainGrid.FindName("CurrentlySelectedName")).Text = closestComponent.name;
-                    ((Grid)MainGrid.FindName("CurrentlySelectedGrid")).Background = (Brush) Application.Current.FindResource("ComponentSelected");
-                }
-                else
-                {
-                    ((TextBlock)MainGrid.FindName("CurrentlySelectedName")).Text = "N/A";
-                    ((Grid)MainGrid.FindName("CurrentlySelectedGrid")).Background = (Brush)Application.Current.FindResource("ComponentUnselected");
-                }
-                this.LeftSelectedComponent = closestImage;
-            }
-            if (e.RightButton == MouseButtonState.Pressed)
-            {
-                Image? closestComponentImage = this.GetClosestComponent();
-                if (closestComponentImage != null)
-                {
-                    Component closestComponent = (Component)closestComponentImage.Tag;
-                    if (closestComponent is Switch)
-                    {
-                        Switch switchComponent = (Switch) closestComponent;
-                        switchComponent.FlipSwitch();
-                        if (this.Simulating)
-                        {
-                            this.SimulateCircuit(MainGrid.FindName("SimulateButton"),e);
-                            this.SimulateCircuit(MainGrid.FindName("SimulateButton"), e);
-                        }
-                    }
-                }
-            }
-
-            if (e.MiddleButton == MouseButtonState.Pressed)
-            {
-                this.MiddleDown = true;
-                this.SelectedComponent = this.GetClosestComponent();
-                Image? closestImage = this.SelectedComponent;
-                if (closestImage != null)
-                {
-                    this.MiddleRelativeX = (float) (Mouse.GetPosition(MainCanvas).X - (Canvas.GetLeft(closestImage) + closestImage.ActualWidth / 2));
-                    this.MiddleRelativeY = (float) (Mouse.GetPosition(MainCanvas).Y - (Canvas.GetTop(closestImage) + closestImage.ActualHeight / 2));
-                }
-
-                Grid_MouseMove(sender, e);
-            }
-            else if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                this.LeftDown = true;
-                this.SelectedNode = this.GetClosestNode();
-                if (this.SelectedNode!= null ) { this.SelectedNodeObject = (Node)this.SelectedNode.Tag; }
-                
-                Image? closestImage = this.SelectedNode;
-                if (closestImage != null)
-                {
-                    Wire newWire = new Wire(((Node)closestImage.Tag).name + "-temp", new List<Node>() {(Node)closestImage.Tag}, this.MainCircuit);
-                    newWire.RenderWithOneNode();
-                    this.SelectedWire = newWire;
-                }
-            }
-        }
-        private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (this.Simulating) { return; }
-            if (this.MiddleDown && e.MiddleButton == MouseButtonState.Released)
-            {
-                this.MiddleDown = false;
-                this.SelectedComponent = null;
-            }
-            if (this.LeftDown && e.LeftButton == MouseButtonState.Released)
-            {
-                this.LeftDown = false;
-                if (this.SelectedWire != null)
-                {
-                    Image? closestNodeImage = GetClosestNode();
-                    if (closestNodeImage != null && closestNodeImage != this.SelectedNode)
-                    {
-                        Node closestNode = (Node) closestNodeImage.Tag;
-                        foreach (Wire wire in closestNode.ConnectedWires)
-                        {
-                            if (wire.ConnectedNodes.Contains(this.SelectedNodeObject))
-                            {
-                                wire.DeleteThisConnection();
-                                this.SelectedWire.RemoveLine();
-                                this.SelectedWire = null;
-                                return;
-                            }
-
-                        }
-                        this.SelectedWire.ConnectSecondNode(closestNode);
-
-                    }
-                    else { this.SelectedWire.RemoveLine(); }
-                    this.SelectedWire = null;
-                }
-            }
-        }
         private Image? GetClosestComponent()
         {
             float mouseX = (float)Mouse.GetPosition(MainCanvas).X;
@@ -362,6 +252,108 @@ namespace Real_NEA_Circuit_Simulator
                 }
             }
             return closestImage;
+        }
+        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+
+                Image? closestImage = this.GetClosestComponent();
+                if (closestImage != null)
+                {
+                    Component closestComponent = (Component)closestImage.Tag;
+                    ((TextBlock)MainGrid.FindName("CurrentlySelectedName")).Text = closestComponent.name;
+                    ((Grid)MainGrid.FindName("CurrentlySelectedGrid")).Background = (Brush)Application.Current.FindResource("ComponentSelected");
+                }
+                else
+                {
+                    ((TextBlock)MainGrid.FindName("CurrentlySelectedName")).Text = "N/A";
+                    ((Grid)MainGrid.FindName("CurrentlySelectedGrid")).Background = (Brush)Application.Current.FindResource("ComponentUnselected");
+                }
+                this.LeftSelectedComponent = closestImage;
+            }
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                Image? closestComponentImage = this.GetClosestComponent();
+                if (closestComponentImage != null)
+                {
+                    Component closestComponent = (Component)closestComponentImage.Tag;
+                    if (closestComponent is Switch)
+                    {
+                        Switch switchComponent = (Switch)closestComponent;
+                        switchComponent.FlipSwitch();
+                        if (this.Simulating)
+                        {
+                            this.SimulateCircuit(MainGrid.FindName("SimulateButton"), e);
+                            this.SimulateCircuit(MainGrid.FindName("SimulateButton"), e);
+                        }
+                    }
+                }
+            }
+
+            if (e.MiddleButton == MouseButtonState.Pressed)
+            {
+                this.MiddleDown = true;
+                this.SelectedComponent = this.GetClosestComponent();
+                Image? closestImage = this.SelectedComponent;
+                if (closestImage != null)
+                {
+                    this.MiddleRelativeX = (float)(Mouse.GetPosition(MainCanvas).X - (Canvas.GetLeft(closestImage) + closestImage.ActualWidth / 2));
+                    this.MiddleRelativeY = (float)(Mouse.GetPosition(MainCanvas).Y - (Canvas.GetTop(closestImage) + closestImage.ActualHeight / 2));
+                }
+
+                Grid_MouseMove(sender, e);
+            }
+            else if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                this.LeftDown = true;
+                this.SelectedNode = this.GetClosestNode();
+                if (this.SelectedNode != null) { this.SelectedNodeObject = (Node)this.SelectedNode.Tag; }
+
+                Image? closestImage = this.SelectedNode;
+                if (closestImage != null)
+                {
+                    Wire newWire = new Wire(new List<Node>() { (Node)closestImage.Tag }, this.MainCircuit);
+                    newWire.RenderWithOneNode();
+                    this.SelectedWire = newWire;
+                }
+            }
+        }
+        private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (this.Simulating) { return; }
+            if (this.MiddleDown && e.MiddleButton == MouseButtonState.Released)
+            {
+                this.MiddleDown = false;
+                this.SelectedComponent = null;
+            }
+            if (this.LeftDown && e.LeftButton == MouseButtonState.Released)
+            {
+                this.LeftDown = false;
+                if (this.SelectedWire != null)
+                {
+                    Image? closestNodeImage = GetClosestNode();
+                    if (closestNodeImage != null && closestNodeImage != this.SelectedNode)
+                    {
+                        Node closestNode = (Node) closestNodeImage.Tag;
+                        foreach (Wire wire in closestNode.ConnectedWires)
+                        {
+                            if (wire.ConnectedNodes.Contains(this.SelectedNodeObject))
+                            {
+                                wire.DeleteThisConnection();
+                                this.SelectedWire.RemoveLine();
+                                this.SelectedWire = null;
+                                return;
+                            }
+
+                        }
+                        this.SelectedWire.ConnectSecondNode(closestNode);
+
+                    }
+                    else { this.SelectedWire.RemoveLine(); }
+                    this.SelectedWire = null;
+                }
+            }
         }
         private void Grid_MouseMove(object sender, MouseEventArgs e)
         {
@@ -495,7 +487,7 @@ namespace Real_NEA_Circuit_Simulator
             }
             foreach (ComponentDisplayData data in ComponentDataGrid.Items)
             {
-                data.Active = data.ComponentDescribing.Active;
+                data.Active = data.component.Active;
             }
             ComponentDataGrid.Items.Refresh();
         }
@@ -568,6 +560,11 @@ namespace Real_NEA_Circuit_Simulator
                 {
                     ComponentsToSave[currentComponent.name].Add("Voltage", ((Cell)currentComponent).Voltage.ToString());
                 }
+
+                if (currentComponent is Switch)
+                {
+                    ComponentsToSave[currentComponent.name].Add("Closed", ((Switch)currentComponent).switchClosed.ToString());
+                }
                 AdjacencyListToSave.Add(Counter.ToString(), new List<List<int>>());
                 foreach (Component neighbour in this.MainCircuit.AdjacencyList[currentComponent])
                 {
@@ -621,7 +618,7 @@ namespace Real_NEA_Circuit_Simulator
                 this.loadedFile = fileName;
             }
         }
-        public string ConvertDictsToJsonString(Dictionary<string, Dictionary<string, string>> Components, Dictionary<string, List<List<int>>> AdjacencyListToSave)
+        private string ConvertDictsToJsonString(Dictionary<string, Dictionary<string, string>> Components, Dictionary<string, List<List<int>>> AdjacencyListToSave)
         {
             string jsonString = "{\"Components\":{";
             foreach (string componentNameKey in Components.Keys)
@@ -695,6 +692,16 @@ namespace Real_NEA_Circuit_Simulator
                                     newComponent.Rotate(int.Parse(componentData["Rotation"]));
                                     DataGridHandler.AddNewComponentData(newComponent);
                                 }
+                                else if (componentData["Type"] == "Bulb")
+                                {
+                                    Bulb newComponent = new Bulb(componentNameDataPair.Key, MainCircuit);
+                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
+                                    newComponent.RenderFirst(position);
+                                    this.MainCircuit.ComponentsList.Add(newComponent);
+                                    newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                    DataGridHandler.AddNewComponentData(newComponent);
+                                }
                                 else if(componentData["Type"] == "FixedResistor")
                                 {
                                     FixedResistor newComponent = new FixedResistor(componentNameDataPair.Key, MainCircuit);
@@ -705,9 +712,55 @@ namespace Real_NEA_Circuit_Simulator
                                     //newComponent.Rotate(int.Parse(componentData["Rotation"]));
                                     DataGridHandler.AddNewComponentData(newComponent);
                                 }
+                                else if (componentData["Type"] == "Motor")
+                                {
+                                    Motor newComponent = new Motor(componentNameDataPair.Key, MainCircuit);
+                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
+                                    newComponent.RenderFirst(position);
+                                    this.MainCircuit.ComponentsList.Add(newComponent);
+                                    //newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                    DataGridHandler.AddNewComponentData(newComponent);
+                                }
+                                else if (componentData["Type"] == "Buzzer")
+                                {
+                                    Buzzer newComponent = new Buzzer(componentNameDataPair.Key, MainCircuit);
+                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
+                                    newComponent.RenderFirst(position);
+                                    this.MainCircuit.ComponentsList.Add(newComponent);
+                                    newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                    DataGridHandler.AddNewComponentData(newComponent);
+                                }
+                                else if (componentData["Type"] == "Switch")
+                                {
+                                    Switch newComponent = new Switch(componentNameDataPair.Key, MainCircuit);
+                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
+                                    newComponent.RenderFirst(position);
+                                    this.MainCircuit.ComponentsList.Add(newComponent);
+                                    newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                    Console.WriteLine(componentData["Closed"]);
+                                    if (componentData["Closed"] == "False")
+                                    {
+                                        newComponent.FlipSwitch();
+                                    }
+                                    DataGridHandler.AddNewComponentData(newComponent);
+                                }
                                 else if (componentData["Type"] == "Cell")
                                 {
                                     Cell newComponent = new Cell(componentNameDataPair.Key, MainCircuit);
+                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
+                                    newComponent.SetVoltage(float.Parse(componentData["Voltage"]));
+                                    newComponent.RenderFirst(position);
+                                    this.MainCircuit.ComponentsList.Add(newComponent);
+                                    newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                    DataGridHandler.AddNewComponentData(newComponent);
+                                }
+                                else if (componentData["Type"] == "Battery")
+                                {
+                                    Battery newComponent = new Battery(componentNameDataPair.Key, MainCircuit);
                                     Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
                                     newComponent.SetResistance(float.Parse(componentData["Resistance"]));
                                     newComponent.SetVoltage(float.Parse(componentData["Voltage"]));
@@ -755,7 +808,7 @@ namespace Real_NEA_Circuit_Simulator
                                     }
                                     if (!connAlreadyMade)
                                     {
-                                        Wire newWire = new Wire(currentComponent.name + inpOut + "-" + neighbour.name + neighbourDat[1], new List<Node>() { currentComponent.ConnectedNodes[inpOut] }, MainCircuit);
+                                        Wire newWire = new Wire(new List<Node>() { currentComponent.ConnectedNodes[inpOut] }, MainCircuit);
                                         newWire.RenderWithOneNode();
                                         newWire.ConnectSecondNode(neighbour.ConnectedNodes[neighbourDat[1]]);
                                     }

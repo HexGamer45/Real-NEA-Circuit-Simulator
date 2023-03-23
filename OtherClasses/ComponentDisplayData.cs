@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses;
+﻿using Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses;
 
 namespace Real_NEA_Circuit_Simulator.OtherClasses
 {
     public class ComponentDisplayData
     {
-        public Component Component;
+        public Component component { get; private set; }
         public string name;
         public float resistance;
         public float voltage;
         public bool active;
 
+        /*
+        The following properies have defined functions like this because the DataGridHandler is associated with a .NET
+        Class (Used to update the data table in the workspace) that can only access fields in the following format:
+        */
         public string Name 
         {
             get
@@ -24,7 +22,7 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses
             } set
             {
                 name = value;
-                ComponentDescribing.SetName(name);
+                component.SetName(name);
             }
         }
         public float Resistance
@@ -36,7 +34,7 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses
             set
             {
                 resistance = value;
-                ComponentDescribing.SetResistance(resistance);
+                component.SetResistance(resistance);
             }
         }
         public float Voltage
@@ -48,7 +46,7 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses
             set
             {
                 voltage = value;
-                ComponentDescribing.SetVoltage(voltage);
+                component.SetVoltage(voltage);
             }
         }
         public bool Active
@@ -60,15 +58,12 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses
             set
             {
                 active = value;
-                ComponentDescribing.SetActive(active);
+                component.SetActive(active);
             }
         }
-
-        public Component ComponentDescribing { get; private set; }
-
         public ComponentDisplayData(Component component)
         {
-            this.Component = component;
+            this.component = component;
             name = component.name;
             resistance = component.Resistance;
             if (component is Cell)
@@ -80,7 +75,6 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses
                 voltage = 0;
             }
             active = component.Active;
-            this.ComponentDescribing = component;
         }
     }
 }

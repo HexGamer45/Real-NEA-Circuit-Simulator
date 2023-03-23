@@ -1,17 +1,9 @@
-﻿using Real_NEA_Circuit_Simulator.OtherClasses;
-using Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Drawing;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Xml.Linq;
 using Point = System.Drawing.Point;
 using Size = System.Windows.Size;
 
@@ -32,22 +24,9 @@ namespace Real_NEA_Circuit_Simulator
             this.image = null;
             this.MainCircuit = circuit;
             this.name = name;
-            this.ConnectedNodes = new List<Node>() { new Node(name + "0", this), new Node(name + "1", this) };
+            this.ConnectedNodes = new List<Node>() { new Node(this), new Node(this) };
             this.MainCircuit.AdjacencyList.Add(this, new List<Component>());
         }
-        public void AddNode(Node node)
-        {
-            this.ConnectedNodes.Add(node);
-        }
-
-        public void AddNodes(List<Node> nodes)
-        {
-            foreach (Node node in nodes) 
-            {
-                this.AddNode(node);
-            }
-        }        
-
 
         public void RenderFirst(Point position)
         {
@@ -74,7 +53,6 @@ namespace Real_NEA_Circuit_Simulator
                 
             }
         }
-
         public void Move(Point position)
         {
             if (this.image != null)
@@ -91,48 +69,40 @@ namespace Real_NEA_Circuit_Simulator
                 this.ConnectedNodes[1].Move(position, 1);
             }
         }
-
-        public float getVoltageAvailable(float totalVoltage, float totalResistance)
+        protected float getVoltageAvailable(float totalVoltage, float totalResistance)
         {
             float accessedVolts = totalVoltage * this.Resistance / totalResistance;
             return accessedVolts;
         }
-        public float getPowerAvailable(float totalVoltage, float totalResistance)
+        protected float getPowerAvailable(float totalVoltage, float totalResistance)
         {
             float power = (float)Math.Pow(this.getVoltageAvailable(totalVoltage,totalResistance), 2) / this.Resistance;
             return power;
         }
-
         public virtual void PerformComponentFunction(float totalVoltage, float totalResistance)
         {
             this.Active = true;
         }
-
         public virtual void DisableComponentFunction()
         {
             this.Active = false;
         }
-
         public void SetName(string name)
         {
             this.name = name;
         }
-
         public void SetResistance(float resistance)
         {
             this.Resistance = resistance;
         }
-
         public virtual void SetVoltage(float voltage)
         {
             return;
         }
-
         public void SetActive(bool active)
         {
             this.Active = active;
         }
-
         public void Rotate(int degrees = 90)
         {
             this.rotation += degrees;
@@ -163,7 +133,6 @@ namespace Real_NEA_Circuit_Simulator
             this.ConnectedNodes[0].Move(position, 0);
             this.ConnectedNodes[1].Move(position, 1);
         }
-
         public void Delete()
         {
             foreach (Node node in this.ConnectedNodes)
@@ -187,6 +156,5 @@ namespace Real_NEA_Circuit_Simulator
             this.MainCircuit.MainCanvas.Children.Remove(this.image);
             
         }
-
     }
 }

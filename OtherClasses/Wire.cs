@@ -1,11 +1,5 @@
-﻿﻿using Real_NEA_Circuit_Simulator.OtherClasses;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -18,12 +12,10 @@ namespace Real_NEA_Circuit_Simulator
         public Line? line { get; private set; }
         public Circuit MainCircuit { get; private set; } 
         public List<Node> ConnectedNodes {get; private set;}
-        public string name { get; private set; }
-        public Wire(string name,List<Node> nodes, Circuit MainCircuit)
+        public Wire(List<Node> nodes, Circuit MainCircuit)
         {
             this.line = null;
             this.MainCircuit = MainCircuit;
-            this.name = name;
             this.ConnectedNodes = nodes;
 
         }
@@ -34,15 +26,6 @@ namespace Real_NEA_Circuit_Simulator
             this.ConnectedNodes.Add(node);
             node.ConnectedWires.Add(this);
         }
-
-        public void AddNodes(List<Node> nodes)
-        {
-            foreach (Node node in nodes)
-            {
-                this.AddNode(node);
-            }
-        }
-
         public void RenderWithOneNode()
         {
             this.ConnectedNodes[0].AddWire(this);
@@ -61,14 +44,12 @@ namespace Real_NEA_Circuit_Simulator
                 this.MainCircuit.WireToNodes[this].Add(ConnectedNodes[0]);
             }
         }
-
         public void MoveOneNodeLine(Point position2)
         {
             if (this.line == null) { return; }
             this.line.X2 = position2.X;
             this.line.Y2 = position2.Y;
         }
-
         public void RemoveLine()
         {
             this.ConnectedNodes[0].ConnectedWires.Remove(this);
@@ -78,7 +59,6 @@ namespace Real_NEA_Circuit_Simulator
             this.ConnectedNodes.Clear();
             
         }
-
         public void DeleteThisConnection()
         {
             foreach (Node node in this.ConnectedNodes)
@@ -92,7 +72,6 @@ namespace Real_NEA_Circuit_Simulator
             this.MainCircuit.WireToNodes.Remove(this);
             this.ConnectedNodes.Clear();
         }
-
         public void ConnectSecondNode(Node node2)
         {
             if (this.line == null) { return; }
@@ -122,9 +101,7 @@ namespace Real_NEA_Circuit_Simulator
                 this.MainCircuit.AdjacencyList[node2.ConnectedComponent].Add(this.ConnectedNodes[0].ConnectedComponent);
             }
             this.MainCircuit.WireToNodes[this].Add(ConnectedNodes[1]);
-            this.name = this.name.Substring(0, this.name.Length - 4) + node2.name;
 
         }
-
     }
 }
