@@ -687,148 +687,155 @@ namespace Real_NEA_Circuit_Simulator
                 using (StreamReader r = new StreamReader(filename))
                 {
                     string data = r.ReadToEnd();
-                    incoming = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(data);
-                    if (incoming != null)
+                    try
                     {
-                        foreach (KeyValuePair<string,object> componentNameDataPair in incoming["Components"])
+                        incoming = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(data);
+                        if (incoming != null)
                         {
-                            JsonElement rawComponentData =(JsonElement) componentNameDataPair.Value;
-                            Dictionary<string,string>? componentData = rawComponentData.Deserialize<Dictionary<string, string>>();
-                            if (componentData != null)
+                            foreach (KeyValuePair<string, object> componentNameDataPair in incoming["Components"])
                             {
-                                if (componentData["Type"] == "LED")
+                                JsonElement rawComponentData = (JsonElement)componentNameDataPair.Value;
+                                Dictionary<string, string>? componentData = rawComponentData.Deserialize<Dictionary<string, string>>();
+                                if (componentData != null)
                                 {
-                                    LED newComponent = new LED(componentNameDataPair.Key, MainCircuit);
-                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
-                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
-                                    newComponent.RenderFirst(position);
-                                    this.MainCircuit.ComponentsList.Add(newComponent);
-                                    newComponent.Rotate(int.Parse(componentData["Rotation"]));
-                                    DataGridHandler.AddNewComponentData(newComponent);
-                                }
-                                else if (componentData["Type"] == "Bulb")
-                                {
-                                    Bulb newComponent = new Bulb(componentNameDataPair.Key, MainCircuit);
-                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
-                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
-                                    newComponent.RenderFirst(position);
-                                    this.MainCircuit.ComponentsList.Add(newComponent);
-                                    newComponent.Rotate(int.Parse(componentData["Rotation"]));
-                                    DataGridHandler.AddNewComponentData(newComponent);
-                                }
-                                else if(componentData["Type"] == "FixedResistor")
-                                {
-                                    FixedResistor newComponent = new FixedResistor(componentNameDataPair.Key, MainCircuit);
-                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
-                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
-                                    newComponent.RenderFirst(position);
-                                    this.MainCircuit.ComponentsList.Add(newComponent);
-                                    //newComponent.Rotate(int.Parse(componentData["Rotation"]));
-                                    DataGridHandler.AddNewComponentData(newComponent);
-                                }
-                                else if (componentData["Type"] == "Motor")
-                                {
-                                    Motor newComponent = new Motor(componentNameDataPair.Key, MainCircuit);
-                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
-                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
-                                    newComponent.RenderFirst(position);
-                                    this.MainCircuit.ComponentsList.Add(newComponent);
-                                    //newComponent.Rotate(int.Parse(componentData["Rotation"]));
-                                    DataGridHandler.AddNewComponentData(newComponent);
-                                }
-                                else if (componentData["Type"] == "Buzzer")
-                                {
-                                    Buzzer newComponent = new Buzzer(componentNameDataPair.Key, MainCircuit);
-                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
-                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
-                                    newComponent.RenderFirst(position);
-                                    this.MainCircuit.ComponentsList.Add(newComponent);
-                                    newComponent.Rotate(int.Parse(componentData["Rotation"]));
-                                    DataGridHandler.AddNewComponentData(newComponent);
-                                }
-                                else if (componentData["Type"] == "Switch")
-                                {
-                                    Switch newComponent = new Switch(componentNameDataPair.Key, MainCircuit);
-                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
-                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
-                                    newComponent.RenderFirst(position);
-                                    this.MainCircuit.ComponentsList.Add(newComponent);
-                                    newComponent.Rotate(int.Parse(componentData["Rotation"]));
-                                    Console.WriteLine(componentData["Closed"]);
-                                    if (componentData["Closed"] == "False")
+                                    if (componentData["Type"] == "LED")
                                     {
-                                        newComponent.FlipSwitch();
+                                        LED newComponent = new LED(componentNameDataPair.Key, MainCircuit);
+                                        Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                        newComponent.SetResistance(float.Parse(componentData["Resistance"]));
+                                        newComponent.RenderFirst(position);
+                                        this.MainCircuit.ComponentsList.Add(newComponent);
+                                        newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                        DataGridHandler.AddNewComponentData(newComponent);
                                     }
-                                    DataGridHandler.AddNewComponentData(newComponent);
-                                }
-                                else if (componentData["Type"] == "Cell")
-                                {
-                                    Cell newComponent = new Cell(componentNameDataPair.Key, MainCircuit);
-                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
-                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
-                                    newComponent.SetVoltage(float.Parse(componentData["Voltage"]));
-                                    newComponent.RenderFirst(position);
-                                    this.MainCircuit.ComponentsList.Add(newComponent);
-                                    newComponent.Rotate(int.Parse(componentData["Rotation"]));
-                                    DataGridHandler.AddNewComponentData(newComponent);
-                                }
-                                else if (componentData["Type"] == "Battery")
-                                {
-                                    Battery newComponent = new Battery(componentNameDataPair.Key, MainCircuit);
-                                    Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
-                                    newComponent.SetResistance(float.Parse(componentData["Resistance"]));
-                                    newComponent.SetVoltage(float.Parse(componentData["Voltage"]));
-                                    newComponent.RenderFirst(position);
-                                    this.MainCircuit.ComponentsList.Add(newComponent);
-                                    newComponent.Rotate(int.Parse(componentData["Rotation"]));
-                                    DataGridHandler.AddNewComponentData(newComponent);
+                                    else if (componentData["Type"] == "Bulb")
+                                    {
+                                        Bulb newComponent = new Bulb(componentNameDataPair.Key, MainCircuit);
+                                        Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                        newComponent.SetResistance(float.Parse(componentData["Resistance"]));
+                                        newComponent.RenderFirst(position);
+                                        this.MainCircuit.ComponentsList.Add(newComponent);
+                                        newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                        DataGridHandler.AddNewComponentData(newComponent);
+                                    }
+                                    else if (componentData["Type"] == "FixedResistor")
+                                    {
+                                        FixedResistor newComponent = new FixedResistor(componentNameDataPair.Key, MainCircuit);
+                                        Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                        newComponent.SetResistance(float.Parse(componentData["Resistance"]));
+                                        newComponent.RenderFirst(position);
+                                        this.MainCircuit.ComponentsList.Add(newComponent);
+                                        //newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                        DataGridHandler.AddNewComponentData(newComponent);
+                                    }
+                                    else if (componentData["Type"] == "Motor")
+                                    {
+                                        Motor newComponent = new Motor(componentNameDataPair.Key, MainCircuit);
+                                        Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                        newComponent.SetResistance(float.Parse(componentData["Resistance"]));
+                                        newComponent.RenderFirst(position);
+                                        this.MainCircuit.ComponentsList.Add(newComponent);
+                                        //newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                        DataGridHandler.AddNewComponentData(newComponent);
+                                    }
+                                    else if (componentData["Type"] == "Buzzer")
+                                    {
+                                        Buzzer newComponent = new Buzzer(componentNameDataPair.Key, MainCircuit);
+                                        Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                        newComponent.SetResistance(float.Parse(componentData["Resistance"]));
+                                        newComponent.RenderFirst(position);
+                                        this.MainCircuit.ComponentsList.Add(newComponent);
+                                        newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                        DataGridHandler.AddNewComponentData(newComponent);
+                                    }
+                                    else if (componentData["Type"] == "Switch")
+                                    {
+                                        Switch newComponent = new Switch(componentNameDataPair.Key, MainCircuit);
+                                        Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                        newComponent.SetResistance(float.Parse(componentData["Resistance"]));
+                                        newComponent.RenderFirst(position);
+                                        this.MainCircuit.ComponentsList.Add(newComponent);
+                                        newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                        Console.WriteLine(componentData["Closed"]);
+                                        if (componentData["Closed"] == "False")
+                                        {
+                                            newComponent.FlipSwitch();
+                                        }
+                                        DataGridHandler.AddNewComponentData(newComponent);
+                                    }
+                                    else if (componentData["Type"] == "Cell")
+                                    {
+                                        Cell newComponent = new Cell(componentNameDataPair.Key, MainCircuit);
+                                        Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                        newComponent.SetResistance(float.Parse(componentData["Resistance"]));
+                                        newComponent.SetVoltage(float.Parse(componentData["Voltage"]));
+                                        newComponent.RenderFirst(position);
+                                        this.MainCircuit.ComponentsList.Add(newComponent);
+                                        newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                        DataGridHandler.AddNewComponentData(newComponent);
+                                    }
+                                    else if (componentData["Type"] == "Battery")
+                                    {
+                                        Battery newComponent = new Battery(componentNameDataPair.Key, MainCircuit);
+                                        Point position = new Point(Convert.ToInt16(componentData["PositionX"]), Convert.ToInt16(componentData["PositionY"]));
+                                        newComponent.SetResistance(float.Parse(componentData["Resistance"]));
+                                        newComponent.SetVoltage(float.Parse(componentData["Voltage"]));
+                                        newComponent.RenderFirst(position);
+                                        this.MainCircuit.ComponentsList.Add(newComponent);
+                                        newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                        DataGridHandler.AddNewComponentData(newComponent);
+                                    }
+
                                 }
 
                             }
-
-                        }
-                        foreach (KeyValuePair<string, object> componentNameDataPair in incoming["AdjacencyList"])
-                        {
-                            JsonElement rawConnections = (JsonElement)componentNameDataPair.Value;
-                            List<List<int>>? neighbours = rawConnections.Deserialize<List<List<int>>>();
-                            if (neighbours != null && neighbours.Count > 0)
+                            foreach (KeyValuePair<string, object> componentNameDataPair in incoming["AdjacencyList"])
                             {
-                                Component currentComponent = this.MainCircuit.ComponentsList[Convert.ToInt16(componentNameDataPair.Key)];
-                                if (!this.MainCircuit.AdjacencyList.ContainsKey(currentComponent))
+                                JsonElement rawConnections = (JsonElement)componentNameDataPair.Value;
+                                List<List<int>>? neighbours = rawConnections.Deserialize<List<List<int>>>();
+                                if (neighbours != null && neighbours.Count > 0)
                                 {
-                                    this.MainCircuit.AdjacencyList.Add(currentComponent, new List<Component>());
-                                }
-                                foreach (List<int> neighbourDat in neighbours)
-                                {
-                                    int inpOut = 0;
-                                    if (neighbourDat[1] == 0)
+                                    Component currentComponent = this.MainCircuit.ComponentsList[Convert.ToInt16(componentNameDataPair.Key)];
+                                    if (!this.MainCircuit.AdjacencyList.ContainsKey(currentComponent))
                                     {
-                                        inpOut = 1;
+                                        this.MainCircuit.AdjacencyList.Add(currentComponent, new List<Component>());
                                     }
-
-                                    int neighbourIndex = neighbourDat[0];
-                                    Component neighbour = this.MainCircuit.ComponentsList[Convert.ToInt16(neighbourIndex)];
-                                    if (!this.MainCircuit.AdjacencyList.ContainsKey(neighbour))
+                                    foreach (List<int> neighbourDat in neighbours)
                                     {
-                                        this.MainCircuit.AdjacencyList.Add(neighbour, new List<Component>());
-                                    }
-                                    bool connAlreadyMade = false;
-                                    foreach (Wire connWire in this.MainCircuit.WireToNodes.Keys)
-                                    {
-                                        if (this.MainCircuit.WireToNodes[connWire].Contains(currentComponent.ConnectedNodes[inpOut]) && this.MainCircuit.WireToNodes[connWire].Contains(neighbour.ConnectedNodes[neighbourDat[1]]))
+                                        int inpOut = 0;
+                                        if (neighbourDat[1] == 0)
                                         {
-                                            connAlreadyMade = true;
+                                            inpOut = 1;
+                                        }
+
+                                        int neighbourIndex = neighbourDat[0];
+                                        Component neighbour = this.MainCircuit.ComponentsList[Convert.ToInt16(neighbourIndex)];
+                                        if (!this.MainCircuit.AdjacencyList.ContainsKey(neighbour))
+                                        {
+                                            this.MainCircuit.AdjacencyList.Add(neighbour, new List<Component>());
+                                        }
+                                        bool connAlreadyMade = false;
+                                        foreach (Wire connWire in this.MainCircuit.WireToNodes.Keys)
+                                        {
+                                            if (this.MainCircuit.WireToNodes[connWire].Contains(currentComponent.ConnectedNodes[inpOut]) && this.MainCircuit.WireToNodes[connWire].Contains(neighbour.ConnectedNodes[neighbourDat[1]]))
+                                            {
+                                                connAlreadyMade = true;
+                                            }
+                                        }
+                                        if (!connAlreadyMade)
+                                        {
+                                            Wire newWire = new Wire(new List<Node>() { currentComponent.ConnectedNodes[inpOut] }, MainCircuit);
+                                            newWire.RenderWithOneNode();
+                                            newWire.ConnectSecondNode(neighbour.ConnectedNodes[neighbourDat[1]]);
                                         }
                                     }
-                                    if (!connAlreadyMade)
-                                    {
-                                        Wire newWire = new Wire(new List<Node>() { currentComponent.ConnectedNodes[inpOut] }, MainCircuit);
-                                        newWire.RenderWithOneNode();
-                                        newWire.ConnectSecondNode(neighbour.ConnectedNodes[neighbourDat[1]]);
-                                    }
                                 }
                             }
                         }
+                    }
+                    catch
+                    {
+                        return;
                     }
                 }
             }

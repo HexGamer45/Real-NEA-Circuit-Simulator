@@ -119,6 +119,10 @@ namespace Real_NEA_Circuit_Simulator
             {
                 this.MainCircuit.AdjacencyList.Remove(this);
             }
+            if (this.MainCircuit.ComponentsList.Contains(this))
+            {
+                this.MainCircuit.ComponentsList.Remove(this);
+            }
             this.ConnectedNodes.Clear();
             this.MainCircuit.MainCanvas.Children.Remove(this.image);
 
