@@ -13,6 +13,10 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
 
         public override void PerformComponentFunction(float totalVoltage, float totalResistance)
         {
+            if (this.getPowerAvailable(totalVoltage,totalResistance) <= 0)
+            {
+                return;
+            }
             if (this.image.Source is TransformedBitmap)
             {
                 RotateTransform rotation = new RotateTransform(this.rotation);

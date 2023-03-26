@@ -104,6 +104,9 @@
                 <Button x:Name="SimulateButton" DockPanel.Dock="Top" Click="SimulateCircuit" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,5" Width="Auto" Height="40">
                     Simulate
                 </Button>
+                <Button x:Name="ClearAllButton" DockPanel.Dock="Top" Click="DeleteAll" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,5" Width="Auto" Height="40">
+                    Clear All
+                </Button>
                 <Grid x:Name="CurrentlySelectedGrid" Height="Auto" Width="Auto" DockPanel.Dock="Bottom" Background="{StaticResource ComponentUnselected}">
                     <StackPanel>
                         <TextBlock>

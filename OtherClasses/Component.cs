@@ -125,6 +125,10 @@ namespace Real_NEA_Circuit_Simulator
             }
             this.ConnectedNodes.Clear();
             this.MainCircuit.MainCanvas.Children.Remove(this.image);
+            if (this.MainCircuit.ComponentsList.Contains(this))
+            {
+                this.MainCircuit.ComponentsList.Remove(this);
+            }
 
         }
         public void SetName(string name)
@@ -152,11 +156,19 @@ namespace Real_NEA_Circuit_Simulator
         //These two dynamically return the available voltage and power for the component.
         protected float getVoltageAvailable(float totalVoltage, float totalResistance)
         {
+            if (this.Resistance <= 0)
+            {
+                return 0;
+            }
             float accessedVolts = totalVoltage * this.Resistance / totalResistance;
             return accessedVolts;
         }
         protected float getPowerAvailable(float totalVoltage, float totalResistance)
         {
+            if (this.Resistance <= 0 )
+            {
+                return 0;
+            }
             float power = (float)Math.Pow(this.getVoltageAvailable(totalVoltage,totalResistance), 2) / this.Resistance;
             return power;
         }
