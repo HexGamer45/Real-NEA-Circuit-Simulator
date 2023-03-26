@@ -72,8 +72,6 @@ namespace Real_NEA_Circuit_Simulator
             Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
             newComponent.RenderFirst(position);
             DataGridHandler.AddNewComponentData(newComponent);
-            ComponentDataGrid.CancelEdit();
-            ComponentDataGrid.CancelEdit();
             ComponentDataGrid.Items.Refresh();
         }
         private void GenerateNewBattery(object sender, RoutedEventArgs eventArgs)
@@ -92,8 +90,6 @@ namespace Real_NEA_Circuit_Simulator
             Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
             newComponent.RenderFirst(position);
             DataGridHandler.AddNewComponentData(newComponent);
-            ComponentDataGrid.CancelEdit();
-            ComponentDataGrid.CancelEdit();
             ComponentDataGrid.Items.Refresh();
         }
         private void GenerateNewBulb(object sender, RoutedEventArgs eventArgs)
@@ -112,8 +108,6 @@ namespace Real_NEA_Circuit_Simulator
             Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
             newComponent.RenderFirst(position);
             DataGridHandler.AddNewComponentData(newComponent);
-            ComponentDataGrid.CancelEdit();
-            ComponentDataGrid.CancelEdit();
             ComponentDataGrid.Items.Refresh();
         }
         private void GenerateNewBuzzer(object sender, RoutedEventArgs eventArgs)
@@ -132,8 +126,6 @@ namespace Real_NEA_Circuit_Simulator
             Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
             newComponent.RenderFirst(position);
             DataGridHandler.AddNewComponentData(newComponent);
-            ComponentDataGrid.CancelEdit();
-            ComponentDataGrid.CancelEdit();
             ComponentDataGrid.Items.Refresh();
         }
         private void GenerateNewMotor(object sender, RoutedEventArgs eventArgs)
@@ -152,8 +144,6 @@ namespace Real_NEA_Circuit_Simulator
             Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
             newComponent.RenderFirst(position);
             DataGridHandler.AddNewComponentData(newComponent);
-            ComponentDataGrid.CancelEdit();
-            ComponentDataGrid.CancelEdit();
             ComponentDataGrid.Items.Refresh();
         }
         private void GenerateNewSwitch(object sender, RoutedEventArgs eventArgs)
@@ -172,8 +162,6 @@ namespace Real_NEA_Circuit_Simulator
             Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
             newComponent.RenderFirst(position);
             DataGridHandler.AddNewComponentData(newComponent);
-            ComponentDataGrid.CancelEdit();
-            ComponentDataGrid.CancelEdit();
             ComponentDataGrid.Items.Refresh();
         }
         private void GenerateNewLED(object sender, RoutedEventArgs eventArgs)
@@ -193,8 +181,6 @@ namespace Real_NEA_Circuit_Simulator
             newComponent.RenderFirst(position);
             DataGridHandler.AddNewComponentData(newComponent);
             ObservableCollection<ComponentDisplayData> data = DataGridHandler.LoadCollectionData();
-            ComponentDataGrid.CancelEdit();
-            ComponentDataGrid.CancelEdit();
             ComponentDataGrid.Items.Refresh();
         }
         private void GenerateNewFixedResistor(object sender, RoutedEventArgs eventArgs)
@@ -213,8 +199,6 @@ namespace Real_NEA_Circuit_Simulator
             Point position = new Point((int)MainCanvas.ActualWidth / 2, (int)MainCanvas.ActualHeight / 2);
             newComponent.RenderFirst(position);
             DataGridHandler.AddNewComponentData(newComponent);
-            ComponentDataGrid.CancelEdit();
-            ComponentDataGrid.CancelEdit();
             ComponentDataGrid.Items.Refresh();
         }
         #endregion
@@ -533,8 +517,6 @@ namespace Real_NEA_Circuit_Simulator
             {
                 data.Active = data.component.Active;
             }
-            ComponentDataGrid.CancelEdit();
-            ComponentDataGrid.CancelEdit();
             ComponentDataGrid.Items.Refresh();
         }
         private void DisableCircuit()
