@@ -32,7 +32,7 @@ namespace Real_NEA_Circuit_Simulator.OtherClasses.ComponentSubClasses
                     base.PerformComponentFunction(totalVoltage, totalResistance);
                     return;
                 }
-                this.image.Source = (BitmapImage)Application.Current.FindResource("ActivateMotor");
+                this.image.Source = (BitmapImage)Application.Current.FindResource("ActiveMotor");
                 base.PerformComponentFunction(totalVoltage, totalResistance);
             }
             return;
