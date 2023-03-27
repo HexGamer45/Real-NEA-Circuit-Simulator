@@ -471,7 +471,7 @@ namespace Real_NEA_Circuit_Simulator
                 foreach (Component component in UsableCircuit.Keys)
                 {
                     component.PerformComponentFunction(totalVoltage, totalResistance);
-                    if (component.Active == false || (component is Switch && ((Switch)component).switchClosed!=true))
+                    if (component.Active == false || (component is Switch && ((Switch)component).switchClosed != true))
                     {
                         componentFailed = true;
                         break;
@@ -498,7 +498,27 @@ namespace Real_NEA_Circuit_Simulator
                         ComponentDataGrid.Columns[2].IsReadOnly = true;
                     }
                 }
-
+                foreach (ComponentDisplayData data in ComponentDataGrid.Items)
+                {
+                    data.Active = data.component.Active;
+                }
+                try
+                {
+                    ComponentDataGrid.Items.Refresh();
+                }
+                catch
+                {
+                    Button button = (Button)sender;
+                    button.Content = "Simulate";
+                    this.Simulating = false;
+                    this.DisableCircuit();
+                    string text = "The table has an error in it, likely means that you are still editing a cell in the table.";
+                    string caption = "Data couldn't load into table.";
+                    MessageBoxButton messageButton = MessageBoxButton.OK;
+                    MessageBoxImage icon = MessageBoxImage.Warning;
+                    MessageBox.Show(text, caption, messageButton, icon);
+                }
+                
             }
             else
             {
@@ -513,11 +533,6 @@ namespace Real_NEA_Circuit_Simulator
                     ComponentDataGrid.Columns[2].IsReadOnly = false;
                 }
             }
-            foreach (ComponentDisplayData data in ComponentDataGrid.Items)
-            {
-                data.Active = data.component.Active;
-            }
-            ComponentDataGrid.Items.Refresh();
         }
         private void DisableCircuit()
         {
@@ -712,6 +727,7 @@ namespace Real_NEA_Circuit_Simulator
                                 Dictionary<string, string>? componentData = rawComponentData.Deserialize<Dictionary<string, string>>();
                                 if (componentData != null)
                                 {
+                                    //These can't be dynamically typed so i had to code it sequencially through selection.
                                     if (componentData["Type"] == "LED")
                                     {
                                         LED newComponent = new LED(componentNameDataPair.Key, MainCircuit);
@@ -739,7 +755,7 @@ namespace Real_NEA_Circuit_Simulator
                                         newComponent.SetResistance(float.Parse(componentData["Resistance"]));
                                         newComponent.RenderFirst(position);
                                         this.MainCircuit.ComponentsList.Add(newComponent);
-                                        //newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                        newComponent.Rotate(int.Parse(componentData["Rotation"]));
                                         DataGridHandler.AddNewComponentData(newComponent);
                                     }
                                     else if (componentData["Type"] == "Motor")
@@ -749,7 +765,7 @@ namespace Real_NEA_Circuit_Simulator
                                         newComponent.SetResistance(float.Parse(componentData["Resistance"]));
                                         newComponent.RenderFirst(position);
                                         this.MainCircuit.ComponentsList.Add(newComponent);
-                                        //newComponent.Rotate(int.Parse(componentData["Rotation"]));
+                                        newComponent.Rotate(int.Parse(componentData["Rotation"]));
                                         DataGridHandler.AddNewComponentData(newComponent);
                                     }
                                     else if (componentData["Type"] == "Buzzer")
@@ -770,7 +786,6 @@ namespace Real_NEA_Circuit_Simulator
                                         newComponent.RenderFirst(position);
                                         this.MainCircuit.ComponentsList.Add(newComponent);
                                         newComponent.Rotate(int.Parse(componentData["Rotation"]));
-                                        Console.WriteLine(componentData["Closed"]);
                                         if (componentData["Closed"] == "False")
                                         {
                                             newComponent.FlipSwitch();

@@ -96,7 +96,7 @@ namespace Real_NEA_Circuit_Simulator
                 transformBmp.EndInit();
                 this.image.Source = transformBmp;
             }
-            Point position = new Point((int)Canvas.GetLeft(this.image), (int)Canvas.GetTop(this.image));
+            Point position = new Point((int)(Canvas.GetLeft(this.image)), (int)(Canvas.GetTop(this.image)));
             this.ConnectedNodes[0].Move(position, 0);
             this.ConnectedNodes[1].Move(position, 1);
         }
